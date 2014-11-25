@@ -1,0 +1,70 @@
+\documentclass[a4paper,12pt,titlepage]{article}
+\usepackage{fullpage}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[parfill]{parskip}
+
+% define the title
+\author{Adam Ku\v{c}era 4406028\\Maarten Duijn 1517279}
+\title{Software Reengineering Assignment 1}
+\date{\today}
+\begin{document}
+
+% generates the title
+\maketitle
+
+\section{Initial understanding}
+%From about:
+The Alitheia Core tool is an extensible platform for software quality analysis that is designed specifically to facilitate software engineering research on large and diverse data sources. It integrates data collection and preprocessing phases with an array of analysis services, and presents the researcher with an easy to use extension mechanism. Alitheia Core aims to be the basis of an ecosystem of shared tools and research data that will enable researchers to focus on their research questions at hand, rather than spend time on re-implementing analysis tools.
+
+More specifically, Alitheia is the name of a platform, developed by the SQO-OSS project, for the automated objective evaluation of the quality of Open Source projects. By analyzing both the soft and the hard project artifacts (the project source code history is "hard" while the mailing lists, bug tracker entries and other human communications are "soft") the Alitheia software will produce a broader and more comprehensive picture of the quality and viability of each Open Source project than tools that examine only the product of the project.
+
+%From Documentation:
+Alitheia Core can process 3 types of data:
+\begin{itemize}
+\item Revisions from source code management systems
+\item Emails from mailing lists
+\item Bugs from bug tracking databases
+\end{itemize}
+
+%What are the main features of the program?
+What are the main features of the program?
+\begin{itemize}
+\item Calculate metrics
+\item Provide an interface for plugins to calculate metrics
+\item Interpret data from a wide range of sources
+\item Provide a REST interface that allows for accessing the stored metadata and metric results in a structured manner
+\item Provide error recovery tools: logs, metadata consistency. %TODO weird feature but important, see: http://www.sqo-oss.org/run
+\item Update functionality %TODO really a feature?
+\end{itemize}
+
+%Which are the important source code entities?
+Which are the important source code entities?
+%TODO verfiy these
+\begin{itemize}
+\item Calculate metrics %TODO exact entity please
+\item Project: It represents a project that can have multiple project versions, multiple mailing lists and multiple bug reports
+
+\item Developer: A developer is a person that has contributed to the project.
+
+\item ProjectFile: A state in a file's development history.
+
+\item MailingList: A mailing list represents a collection of MailMessages that are sent to (or carbon-copied to) a common email address.
+
+\item Plugin : Represents and holds information about a metric plug-in. A Plugin can define several Metrics, which are uniquely identified by a mnemonic
+
+\item MetricMeasurement : is the entity that encapsulates all metric results.
+\end{itemize}
+
+
+%What is your first impression of the quality of the design and implementation (also think of documentation, tests, etc.)?
+\begin{itemize}
+\item Documentation (website: \ur{http://www.sqo-oss.org/roadmap}) has quite a number of dead links, and is outdated for example the database schema was posted on 02/11/2010
+\item Coding Style: supposedly java standard style, %TODO how well is this standard followed
+\item JavaDoc: each function requires: parameters, return and exceptions %TODO how well is the javadoc followed
+\end{itemize}
+%Do you think a reengineering is feasible?
+
+
+%TODO Loads of uses of get, according to Uniform Access Principle this is bad
+
+\end{document}
