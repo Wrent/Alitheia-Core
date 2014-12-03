@@ -6,7 +6,7 @@
 
 % define the title
 \author{Adam Ku\v{c}era 4406028\\Maarten Duijn 1517279}
-\title{Software Reengineering Assignment 1}
+\title{Reverse Engineering and Detection Report}
 \date{\today}
 \begin{document}
 
@@ -84,9 +84,9 @@ Many of the render and update methods in the product are very long indicating th
 The same goes for the UpdaterServiceImpl update method, with 226 liines of code and a cyclometic complexity of 36. The method performs a topological sort which should most certainly be a standalone method. Such an algorithm is a very likely candidate for bugs and should be easily testable.
 
 \subsection{Liskov Substitution Principle violation}
-Class UpdaterJob, which is a descendant of Job class violates the LSP, more specifically its usage in the application. When the update job is started in update() method in UpdateServiceImpl class, it is allways added as an dependency to another already scheduled update jobs. It iterates over all scheduled jobs and using instanceof operator, it asks only for instances of UpdaterJob class.
+An example of an LSP violation is the class UpdaterJob, which is a descendant of Job class violates the LSP, more specifically its usage in the application. When the update job is started in update() method in UpdateServiceImpl class, it is always added as a dependency to another already scheduled update jobs. It iterates over all scheduled jobs and using instanceof operator, it asks only for instances of UpdaterJob class.
 
-The idea of course makes sense, because other scheduled jobs of other typ do not depend on these update jobs, however this is the violation of LSP, because to follow this principle, all jobs should look to the application the same and instanceof should not be necessary to use.
+The idea of course makes sense, because other scheduled jobs of other types do not depend on these update jobs, however this is a violation of the LSP, because to follow this principle, all jobs should look to the same to the application and instanceof should not be necessary to use.
 
 \subsection{Open Closed Principle violation}
 We have been able to detect one small violation of the OCP. It concerns the class UpdaterServiceImpl, which extends the class AlitheiaCoreService. This parent class has an explicit requirement that all its descendants should implement an empty constructor (which is different from omitting the constructor implementation, which results into calling the constructor of super class). This might cause problems in the future, as this means, that UpdaterServiceImpl might not be used in place of all AlitheiaCoreService subtypes thus it violates the OCP.
@@ -115,7 +115,7 @@ Being more abstract, the whole application might not be using only relational da
 A clear example of a violation of the Acyclic Dependency Principle is the relation between the AbstractMetric and MetricActivator packages. As shown in figure \ref{fig:classmetrics}, classes in both packages are used by each other and thus dependent on each other. There seem to be more problems regarding the AbstractMetric package as this package has another cyclic dependency with the pa package, shown in figure \ref{fig:package}. The AbstractMetric package depends on the pa package and vice versa.
 
 \subsection{Duplicated Code}
-The Don't Repeat Yourself principle is violated in a number of places throughout the product. The most clear instance of this is the duplication in the DBServiceImpl class. In this class the doSQL method with approximately 30 lines is effectively copied into the callProcedure method.
+The Don't Repeat Yourself principle is violated in a number of places throughout the product. The most clear example of this is the duplication in the DBServiceImpl class. In this class the doSQL method with approximately 30 lines is effectively copied into the callProcedure method.
 
 A less severe type of duplication: sibling duplication is demonstrated by the SVNUpdaterImpl class, in this class the replayLog method is very similar to the GitUpdater replayLog method. The duplication is understandable, one might want to clearly separate functionality in the raw data handling classes. However by introducing a separate class higher in the class hierarchy for versioning systems with similar functionality (ie. Git, SVN, Bazaar) this duplication would not be necessary.
 
