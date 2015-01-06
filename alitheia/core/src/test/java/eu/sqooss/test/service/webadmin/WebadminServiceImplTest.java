@@ -18,7 +18,7 @@ public class WebadminServiceImplTest {
     }
 
     @Test
-    public void testAdminServiceImpl() {
+    public void testWebadminServiceImpl() {
         assertNotNull(impl);
     }
     
