@@ -22,4 +22,15 @@ public class WebadminServiceImplTest {
         assertNotNull(impl);
     }
     
+    @Test
+    public void testMessageOfTheDay() {
+        assertNull(impl.getMessageOfTheDay());
+        impl.setMessageOfTheDay("message");
+        assertEquals("message", impl.getMessageOfTheDay());
+        assertNotSame("different message", impl.getMessageOfTheDay());
+        impl.setMessageOfTheDay("another message");
+        assertEquals("another message", impl.getMessageOfTheDay());
+        assertNotSame("message", impl.getMessageOfTheDay());
+    }
+    
 }
