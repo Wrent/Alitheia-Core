@@ -29,7 +29,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
-import org.powermock.reflect.Whitebox;
 
 import eu.sqooss.impl.service.webadmin.AdminServlet;
 import eu.sqooss.impl.service.webadmin.WebadminServiceImpl;
@@ -53,6 +52,10 @@ public class WebadminServiceImplTest {
     @Test
     public void testWebadminServiceImpl() {
         assertNotNull(impl);
+    }
+    
+    @Test
+    public void testShutDown() {
     }
     
     @Test
@@ -114,7 +117,6 @@ public class WebadminServiceImplTest {
     private void initStartUpTests() {
     	MockitoAnnotations.initMocks(this);
     	
-    	Whitebox.setInternalState(impl, bc);
-    	Whitebox.setInternalState(impl, logger);
+    	impl.setInitParams(bc, logger);
     }
 }
