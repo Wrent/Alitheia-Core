@@ -43,8 +43,6 @@ public class WebadminServiceImplTest {
     
     static WebadminServiceImpl impl;
     @Mock BundleContext bc;
-    @Mock ServiceReference sr;
-    @Mock HttpService httpservice;
     @Mock Logger logger;
     
     @BeforeClass
@@ -81,6 +79,8 @@ public class WebadminServiceImplTest {
     	initStartUpTests();
 
         AdminServlet servlet = mock(AdminServlet.class);
+        ServiceReference sr = mock(ServiceReference.class);
+        HttpService httpservice = mock(HttpService.class);
 
         when(bc.getServiceReference(HttpService.class.getName())).thenReturn(sr);
         when(bc.getService(any(ServiceReference.class))).thenReturn(null, httpservice, httpservice);
