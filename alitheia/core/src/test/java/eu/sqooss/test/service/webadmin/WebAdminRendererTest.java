@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.powermock.reflect.Whitebox;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,7 @@ public class WebAdminRendererTest {
 
 	//static WebAdminRenderer ;
 	@Mock Scheduler sobjSched;
-	@InjectMocks WebAdminRenderer renderer;
+	@InjectMocks WebAdminRenderer renderer = new WebAdminRenderer(null, null);
 	
 
     @BeforeClass
@@ -51,10 +52,9 @@ public class WebAdminRendererTest {
     
     @Test
     public void testRenderJobFailStats() {
-    	//given(taxService.getCurrentTaxFactorFor(any(Person.class))).willReturn(TAX_FACTOR);
     	MockitoAnnotations.initMocks(this);
     	
-    	
+    	Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
     	
     	when(sobjSched.getSchedulerStats()).thenReturn(new SchedulerStats());
     	String str = WebAdminRenderer.renderJobFailStats();

@@ -71,7 +71,15 @@ public abstract class AbstractView {
     protected static MetricActivator compMA = null;
     protected static PluginAdmin sobjPA = null;
     protected static Scheduler sobjSched = null;
-    protected static TDSService sobjTDS = null;
+    public static Scheduler getSobjSched() {
+		return sobjSched;
+	}
+
+	public static void setSobjSched(Scheduler sobjSched) {
+		AbstractView.sobjSched = sobjSched;
+	}
+
+	protected static TDSService sobjTDS = null;
     protected static UpdaterService sobjUpdater = null;
     protected static ClusterNodeService sobjClusterNode = null;
     protected static SecurityManager sobjSecurity = null;
