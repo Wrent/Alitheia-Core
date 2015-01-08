@@ -42,7 +42,7 @@ import org.osgi.framework.BundleContext;
 
 import eu.sqooss.service.scheduler.Job;
 import eu.sqooss.service.util.StringUtils;
-
+//TODO why is this not a static class?
 /**
  * The WebAdminRender class provides functions for rendering content
  * to be displayed within the WebAdmin interface.
@@ -62,10 +62,11 @@ public class WebAdminRenderer  extends AbstractView {
         super(bundlecontext, vc);
     }
 
+    //TODO ADD REFACTORING Assumes nothing about schedulerstats in sobjSched
     /**
      * Creates and HTML table displaying the details of all the jobs
      * that have failed whilst the system has been up
-     *
+     * 
      * @return a String representing the HTML table
      */
     public static String renderJobFailStats() {
@@ -93,8 +94,10 @@ public class WebAdminRenderer  extends AbstractView {
         return result.toString();
     }
 
+    //TODO commented stuff?
+    //TODO too long, multiple try catches, split up method
     /**
-     * Creates and HTML table with information about the jobs that
+     * Creates an HTML table with information about the jobs that
      * failed and the recorded exceptions
      * @return
      */
@@ -116,11 +119,11 @@ public class WebAdminRenderer  extends AbstractView {
             for(Job j: jobs) {
                 if (j == null) continue;
                 result.append("\t\t<tr>\n\t\t\t<td>");
-                if (j.getClass() != null) {
+                if (j.getClass() != null) { //TODO How does this ever fail? remove if, and try/catch
                     try {
                         //result.append(j.getClass().getPackage().getName());
                         //result.append(". " + j.getClass().getSimpleName());
-			result.append(j.toString());
+                		result.append(j.toString());
                     }
                     catch (NullPointerException ex) {
                         result.append("<b>NA<b>");
@@ -151,8 +154,7 @@ public class WebAdminRenderer  extends AbstractView {
                     result.append("<b>NA<b>");
                 }
                 result.append("</td>\n\t\t\t<td>");
-                if ((e != null)
-                        && (e.getStackTrace() != null)) {
+                if ((e != null) && (e.getStackTrace() != null)) {
                     for(StackTraceElement m: e.getStackTrace()) {
                         if (m == null) continue;
                         result.append(m.getClassName());
@@ -180,6 +182,7 @@ public class WebAdminRenderer  extends AbstractView {
         return result.toString();
     }
 
+    //TODO multiple returns, weird branching, other functions as well
     /**
      * Creates an HTML unordered list displaying the contents of the current system log
      *
@@ -220,8 +223,10 @@ public class WebAdminRenderer  extends AbstractView {
 
         return String.format("%d:%02d:%02d:%02d", days, hours, mins, secs);
     }
-    
 
+    //TODO ADD REFACTORING Assumes nothing about schedulerstats in sobjSched
+    //TODO add description
+    //TODO This is a copy of the renderJobFailStats, is this called anywhere?
     public static String renderJobWaitStats() {
         StringBuilder result = new StringBuilder();
         HashMap<String,Integer> wjobs = sobjSched.getSchedulerStats().getWaitingJobTypes();
@@ -247,6 +252,8 @@ public class WebAdminRenderer  extends AbstractView {
         return result.toString();
     }
 
+    //TODO add description
+    //TODO multiple returns
     public static String renderJobRunStats() {
         StringBuilder result = new StringBuilder();
         List<String> rjobs = sobjSched.getSchedulerStats().getRunJobs();
@@ -263,5 +270,3 @@ public class WebAdminRenderer  extends AbstractView {
         return result.toString();
     }
 }
-
-//vi: ai nosi sw=4 ts=4 expandtab
