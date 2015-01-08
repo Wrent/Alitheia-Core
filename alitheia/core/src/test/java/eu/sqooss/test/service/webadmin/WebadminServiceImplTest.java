@@ -44,10 +44,10 @@ public class WebadminServiceImplTest {
     @Mock BundleContext bc;
     @Mock Logger logger;
     
-    @BeforeClass
-    public static void setUp() {
-        impl = spy(new WebadminServiceImpl());
-    }
+	@BeforeClass
+	public static void setUp() {
+		impl = spy(new WebadminServiceImpl());
+	}
 
     @Test
     public void testWebadminServiceImpl() {
