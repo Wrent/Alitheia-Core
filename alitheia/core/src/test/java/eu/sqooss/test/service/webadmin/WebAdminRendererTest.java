@@ -20,12 +20,10 @@ import eu.sqooss.service.scheduler.Job;
 import eu.sqooss.service.scheduler.Scheduler;
 import eu.sqooss.service.scheduler.SchedulerStats;
 
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Job.class)
 public class WebAdminRendererTest {
 
-	//static WebAdminRenderer ;
 	@Mock Scheduler sobjSched;
 	@Mock LogManager sobjLogManager;    	
 	@Mock Job job1;    	

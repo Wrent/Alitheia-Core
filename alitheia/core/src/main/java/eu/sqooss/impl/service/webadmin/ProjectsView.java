@@ -188,6 +188,7 @@ public class ProjectsView extends AbstractView {
     	if (selProject != null) {
 			// Deleting large projects in the foreground is
 			// very slow
+    		//TODO how does this work, is a private constructor?
 			ProjectDeleteJob pdj = new ProjectDeleteJob(sobjCore, selProject);
 			try {
 				sobjSched.enqueue(pdj);
