@@ -32,7 +32,6 @@ import eu.sqooss.service.pa.PluginInfo;
 
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(StoredProjectConfig.class)
 public class ProjectDeleteJobTest {
 
 	@Mock private StoredProject project;// = new StoredProject("Mock stored project name");

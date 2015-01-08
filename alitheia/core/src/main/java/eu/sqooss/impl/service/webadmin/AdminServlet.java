@@ -65,6 +65,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 
+//TODO add documentation
 public class AdminServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static BundleContext bc = null;
