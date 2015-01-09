@@ -1,8 +1,12 @@
 package eu.sqooss.test.service.webadmin;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,22 +20,17 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Assert;
 
-import org.mockito.Mock;
-import org.junit.*;
+import org.apache.velocity.VelocityContext;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.osgi.framework.BundleContext;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.apache.velocity.VelocityContext;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.application.ScheduledApplication;
 
 import eu.sqooss.core.AlitheiaCore;
 import eu.sqooss.impl.service.webadmin.AbstractView;
-import eu.sqooss.impl.service.webadmin.WebadminServiceImpl;
 import eu.sqooss.service.cluster.ClusterNodeService;
 import eu.sqooss.service.db.DBService;
 import eu.sqooss.service.logging.LogManager;
@@ -334,17 +333,155 @@ public class AbstractViewTest {
 			Assert.assertEquals(expected,
 					method.invoke(aw, null, null, new StringBuilder(""), 0));
 			expected = "<fieldset>\n" + "  <legend>NONAME</legend>\n"
-					+ "content</fieldset>\n";
-			Assert.assertEquals(expected,
-					method.invoke(aw, null, null, new StringBuilder("content"), 0));
+					+ "  content\n</fieldset>\n";
+			Assert.assertEquals(expected, method.invoke(aw, null, null,
+					new StringBuilder("content"), 0));
 			expected = "<fieldset>\n" + "  <legend>name</legend>\n"
-					+ "content</fieldset>\n";
+					+ "  content\n</fieldset>\n";
+			Assert.assertEquals(expected, method.invoke(aw, "name", null,
+					new StringBuilder("content"), 0));
+			expected = "<fieldset class=\"class\">\n"
+					+ "  <legend>name</legend>\n" + "  content\n</fieldset>\n";
+			Assert.assertEquals(expected, method.invoke(aw, "name", "class",
+					new StringBuilder("content"), 0));
+			expected = "    <fieldset class=\"class\">\n"
+					+ "      <legend>name</legend>\n"
+					+ "      content\n    </fieldset>\n";
+			Assert.assertEquals(expected, method.invoke(aw, "name", "class",
+					new StringBuilder("content"), 2));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testErrorFieldset() {
+		Method method = getMethod("errorFieldset", StringBuilder.class,
+				long.class);
+		try {
+			String expected = "";
+			Assert.assertEquals(expected, method.invoke(aw, null, 0));
 			Assert.assertEquals(expected,
-					method.invoke(aw, "name", null, new StringBuilder("content"), 0));
-			expected = "<fieldset class=\"class\">\n" + "  <legend>name</legend>\n"
-					+ "content</fieldset>\n";
+					method.invoke(aw, new StringBuilder(""), 0));
+			expected = "<fieldset>\n" + "  <legend>Errors</legend>\n"
+					+ "  content\n</fieldset>\n";
 			Assert.assertEquals(expected,
-					method.invoke(aw, "name", "class", new StringBuilder("content"), 0));
+					method.invoke(aw, new StringBuilder("content"), 0));
+			expected = "    <fieldset>\n" + "      <legend>Errors</legend>\n"
+					+ "      content\n    </fieldset>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, new StringBuilder("content"), 2));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testFromString() {
+		Method method = getMethod("fromString", String.class);
+		try {
+			Assert.assertEquals(null, method.invoke(aw, "zbla"));
+			Assert.assertEquals((long)1349504334, method.invoke(aw, "1349504334"));
+			Assert.assertEquals((long)-1349504334, method.invoke(aw, "-1349504334"));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testCheckName() {
+		Method method = getMethod("checkName", String.class);
+		try {
+			String text = null;
+			Assert.assertFalse((boolean)method.invoke(aw, text));
+			Assert.assertFalse((boolean)method.invoke(aw, " aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa "));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphabet"));
+			Assert.assertTrue((boolean)method.invoke(aw, "123"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphanumeric123"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphanum eric123"));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testCheckProjectName() {
+		Method method = getMethod("checkProjectName", String.class);
+		try {
+			String text = null;
+			Assert.assertFalse((boolean)method.invoke(aw, text));
+			Assert.assertFalse((boolean)method.invoke(aw, " aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa "));
+			Assert.assertFalse((boolean)method.invoke(aw, "_aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa_"));
+			Assert.assertFalse((boolean)method.invoke(aw, "-aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa-"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphabet"));
+			Assert.assertTrue((boolean)method.invoke(aw, "123"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphanumeric123"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphanum eric123"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphanum-eric123"));
+			Assert.assertTrue((boolean)method.invoke(aw, "alphanum_eric123"));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testCheckEmail() {
+		Method method = getMethod("checkEmail", String.class);
+		try {
+			String text = null;
+			Assert.assertFalse((boolean)method.invoke(aw, text));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa..aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa@aa@a"));
+			Assert.assertFalse((boolean)method.invoke(aw, ".aaa@aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa@.aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa.@aaa"));
+			Assert.assertFalse((boolean)method.invoke(aw, "aaa@aaa."));
+			Assert.assertTrue((boolean)method.invoke(aw, "email@example.com"));
+			Assert.assertTrue((boolean)method.invoke(aw, "_______@example.com"));
+			Assert.assertTrue((boolean)method.invoke(aw, "1234567890@example.com"));
+			Assert.assertFalse((boolean)method.invoke(aw, "Joe Smith <email@example.com>"));
+			Assert.assertFalse((boolean)method.invoke(aw, "email@example"));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testCheckTDSUrl() {
+		Method method = getMethod("checkTDSUrl", String.class);
+		TDSService tds = mock(TDSService.class);
+		when(tds.isURLSupported(anyString())).thenReturn(true);
+		try {
+			Assert.assertTrue((boolean)method.invoke(aw, "url"));
+			verify(tds, times(1)).isURLSupported(anyString());
 		} catch (IllegalAccessException e1) {
 			e1.printStackTrace();
 		} catch (IllegalArgumentException e1) {
