@@ -5,8 +5,14 @@ import static org.mockito.Mockito.*;
 import static org.mockito.BDDMockito.*;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Assert;
 
@@ -79,7 +85,6 @@ public class AbstractViewTest {
 			reinitAbstractView();
 			Assert.assertEquals(core, field.get(aw));
 
-			
 			when(core.getDBService()).thenReturn(db, null);
 			when(core.getPluginAdmin()).thenReturn(pa, null);
 			when(core.getScheduler()).thenReturn(s, null);
@@ -90,7 +95,7 @@ public class AbstractViewTest {
 			when(core.getMetricActivator()).thenReturn(ma, null);
 			when(core.getSecurityManager()).thenReturn(sm, null);
 			doNothing().when(logger).debug(anyString());
-			
+
 			// test Logger manager and logger
 			reinitAbstractView();
 			field = getField("sobjLogManager");
@@ -98,7 +103,7 @@ public class AbstractViewTest {
 			field = getField("sobjLogger");
 			Assert.assertEquals(logger, field.get(aw));
 
-			// test all the other fields			
+			// test all the other fields
 			field = getField("sobjDB");
 			Assert.assertEquals(db, field.get(aw));
 			field = getField("sobjPA");
@@ -113,7 +118,7 @@ public class AbstractViewTest {
 			Assert.assertEquals(us, field.get(aw));
 			field = getField("sobjSecurity");
 			Assert.assertEquals(sm, field.get(aw));
-			
+
 			reinitAbstractView();
 			field = getField("sobjClusterNode");
 			Assert.assertEquals(cn, field.get(aw));
@@ -204,6 +209,151 @@ public class AbstractViewTest {
 				AbstractView.getLabelsBundle(Locale.ENGLISH));
 	}
 
+	@Test
+	public void testDebugRequest() {
+		Method method = getMethod("debugRequest", HttpServletRequest.class);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		Enumeration<Object> e = new StringTokenizer("name1 name2 name3");
+		String expected = "name1=null<br/>\nname2=null<br/>\nname3=null<br/>\n";
+		when(request.getParameterNames()).thenReturn(e);
+		try {
+			Assert.assertEquals(expected, method.invoke(aw, request));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testSp() {
+		Method method = getMethod("sp", long.class);
+		try {
+			Assert.assertEquals("", method.invoke(aw, 0));
+			Assert.assertEquals("  ", method.invoke(aw, 1));
+			Assert.assertEquals("    ", method.invoke(aw, 2));
+			Assert.assertNotSame(" ", method.invoke(aw, 1));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testNormalInputRow() {
+		Method method = getMethod("normalInputRow", String.class, String.class,
+				String.class, long.class);
+		try {
+			Assert.assertEquals("\n", method.invoke(aw, "", null, "", 0));
+			String expected = "\n<tr>\n"
+					+ "  <td class=\"borderless\" style=\"width:100px;\"><b></b></td>\n"
+					+ "  <td class=\"borderless\">\n"
+					+ "    <input type=\"text\" class=\"form\" id=\"name\" name=\"name\" value=\"val\" size=\"60\">\n"
+					+ "  </td>\n" + "</tr>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, null, "name", "val", 0));
+			expected = "\n<tr>\n"
+					+ "  <td class=\"borderless\" style=\"width:100px;\"><b>title</b></td>\n"
+					+ "  <td class=\"borderless\">\n"
+					+ "    <input type=\"text\" class=\"form\" id=\"name\" name=\"name\" value=\"\" size=\"60\">\n"
+					+ "  </td>\n" + "</tr>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "title", "name", null, 0));
+			expected = "\n<tr>\n"
+					+ "  <td class=\"borderless\" style=\"width:100px;\"><b>title</b></td>\n"
+					+ "  <td class=\"borderless\">\n"
+					+ "    <input type=\"text\" class=\"form\" id=\"name\" name=\"name\" value=\"val\" size=\"60\">\n"
+					+ "  </td>\n" + "</tr>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "title", "name", "val", 0));
+			expected = "\n    <tr>\n"
+					+ "      <td class=\"borderless\" style=\"width:100px;\"><b>title</b></td>\n"
+					+ "      <td class=\"borderless\">\n"
+					+ "        <input type=\"text\" class=\"form\" id=\"name\" name=\"name\" value=\"val\" size=\"60\">\n"
+					+ "      </td>\n" + "    </tr>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "title", "name", "val", 2));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testNormalInfoRow() {
+		Method method = getMethod("normalInfoRow", String.class, String.class,
+				long.class);
+		try {
+			String expected = "\n<tr>\n"
+					+ "  <td class=\"borderless\" style=\"width:100px;\"><b></b></td>\n"
+					+ "  <td class=\"borderless\">\n" + "    \n" + "  </td>\n"
+					+ "</tr>\n";
+			Assert.assertEquals(expected, method.invoke(aw, null, null, 0));
+			expected = "\n<tr>\n"
+					+ "  <td class=\"borderless\" style=\"width:100px;\"><b>title</b></td>\n"
+					+ "  <td class=\"borderless\">\n" + "    \n" + "  </td>\n"
+					+ "</tr>\n";
+			Assert.assertEquals(expected, method.invoke(aw, "title", null, 0));
+			expected = "\n<tr>\n"
+					+ "  <td class=\"borderless\" style=\"width:100px;\"><b>title</b></td>\n"
+					+ "  <td class=\"borderless\">\n" + "    value\n"
+					+ "  </td>\n" + "</tr>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "title", "value", 0));
+			expected = "\n    <tr>\n"
+					+ "      <td class=\"borderless\" style=\"width:100px;\"><b>title</b></td>\n"
+					+ "      <td class=\"borderless\">\n" + "        value\n"
+					+ "      </td>\n" + "    </tr>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "title", "value", 2));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testNormalFieldset() {
+		Method method = getMethod("normalFieldset", String.class, String.class,
+				StringBuilder.class, long.class);
+		try {
+			String expected = "";
+			Assert.assertEquals(expected,
+					method.invoke(aw, null, null, null, 0));
+			Assert.assertEquals(expected,
+					method.invoke(aw, null, null, new StringBuilder(""), 0));
+			expected = "<fieldset>\n" + "  <legend>NONAME</legend>\n"
+					+ "content</fieldset>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, null, null, new StringBuilder("content"), 0));
+			expected = "<fieldset>\n" + "  <legend>name</legend>\n"
+					+ "content</fieldset>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "name", null, new StringBuilder("content"), 0));
+			expected = "<fieldset class=\"class\">\n" + "  <legend>name</legend>\n"
+					+ "content</fieldset>\n";
+			Assert.assertEquals(expected,
+					method.invoke(aw, "name", "class", new StringBuilder("content"), 0));
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+	}
+
 	protected void reinitAbstractView() {
 		aw = new AbstractView(bc, vc) {
 		};
@@ -220,6 +370,19 @@ public class AbstractViewTest {
 			e.printStackTrace();
 		}
 		return field;
+	}
+
+	protected Method getMethod(String name, Class<?>... parameterTypes) {
+		Method method = null;
+		try {
+			method = AbstractView.class.getDeclaredMethod(name, parameterTypes);
+			method.setAccessible(true);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+		return method;
 	}
 
 }

@@ -403,8 +403,9 @@ public abstract class AbstractView {
             StringBuilder content,
             long in) {
         if ((content != null) && (content.toString().length() > 0)) {
+        	//css insertion was missing a space, it has been fixed
             return (sp(in) + "<fieldset"
-                    + ((css != null) ? "class=\"" + css + "\"": "")
+                    + ((css != null) ? " class=\"" + css + "\"": "")
                     + ">\n"
                     + sp(++in) + "<legend>"
                     + ((name != null) ? name : "NONAME")
