@@ -61,38 +61,6 @@ public class WebAdminRenderer  extends AbstractView {
     public WebAdminRenderer(BundleContext bundlecontext, VelocityContext vc) {
         super(bundlecontext, vc);
     }
-
-//    //TODO ADD REFACTORING Assumes nothing about schedulerstats in sobjSched
-//    /**
-//     * Creates and HTML table displaying the details of all the jobs
-//     * that have failed whilst the system has been up
-//     * 
-//     * @return a String representing the HTML table
-//     */
-//    public static String renderJobFailStats() {
-//        StringBuilder result = new StringBuilder();
-//        HashMap<String,Integer> fjobs = sobjSched.getSchedulerStats().getFailedJobTypes();
-//        result.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n");
-//        result.append("\t<thead>\n");
-//        result.append("\t\t<tr>\n");
-//        result.append("\t\t\t<td>Job Type</td>\n");
-//        result.append("\t\t\t<td>Num Jobs Failed</td>\n");
-//        result.append("\t\t</tr>\n");
-//        result.append("\t</thead>\n");
-//        result.append("\t<tbody>\n");
-//
-//        String[] jobfailures = fjobs.keySet().toArray(new String[1]);
-//        for(String key : jobfailures) {
-//            result.append("\t\t<tr>\n\t\t\t<td>");
-//            result.append(key==null ? "No failures" : key);
-//            result.append("</td>\n\t\t\t<td>");
-//            result.append(key==null ? "&nbsp;" : fjobs.get(key));
-//            result.append("\t\t\t</td>\n\t\t</tr>");
-//        }
-//        result.append("\t</tbody>\n");
-//        result.append("</table>");
-//        return result.toString();
-//    }
     
     public static HashMap<String,Integer> getFailedJobStats() {
     	return sobjSched.getSchedulerStats().getFailedJobTypes();

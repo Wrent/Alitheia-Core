@@ -6,6 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
+import junit.framework.Assert;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,66 +38,27 @@ public class WebAdminRendererTest {
 	{
     }
         
-//    @Test
-//    public void testRenderJobFailStatsEmpty() {
-//    	
-//    	Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
-//    	
-//    	SchedulerStats stats = new SchedulerStats(); 
-//    	when(sobjSched.getSchedulerStats()).thenReturn(stats);
-//
-//    	String noFailsTruth = 
-//    			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">" + newline +
-//    			"	<thead>" + newline + 
-//    			"		<tr>" + newline + 
-//    			"			<td>Job Type</td>" + newline + 
-//    			"			<td>Num Jobs Failed</td>" + newline + 
-//    			"		</tr>" + newline + 
-//    			"	</thead>" + newline + 
-//    			"	<tbody>" + newline + 
-//    			"		<tr>" + newline + 
-//    			"			<td>No failures</td>" + newline + 
-//    			"			<td>&nbsp;			</td>" + newline + 
-//    			"		</tr>	</tbody>" + newline + 
-//    			"</table>";
-//    	    	
-//    	String noFails = WebAdminRenderer.renderJobFailStats();
-//    	assertEquals(noFailsTruth, noFails);    	
-//    }
-    
-
-//    @Test
-//    public void testRenderJobFailStatsMultiple() {
-//    	
-//    	Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
-//    	
-//    	SchedulerStats stats = new SchedulerStats(); 
-//    	stats.addFailedJob("Job name 1");
-//    	stats.addFailedJob("Job name 2");
-//    	
-//    	when(sobjSched.getSchedulerStats()).thenReturn(stats);
-//
-//    	String multipleFailsTruth = 
-//    			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">" + newline +
-//    			"	<thead>" + newline + 
-//    			"		<tr>" + newline + 
-//    			"			<td>Job Type</td>" + newline + 
-//    			"			<td>Num Jobs Failed</td>" + newline + 
-//    			"		</tr>" + newline + 
-//    			"	</thead>" + newline + 
-//    			"	<tbody>" + newline + 
-//    			"		<tr>" + newline + 
-//    			"			<td>Job name 2</td>" + newline + 
-//    			"			<td>1			</td>" + newline + 
-//    			"		</tr>		<tr>" + newline + 
-//    			"			<td>Job name 1</td>" + newline + 
-//    			"			<td>1			</td>" + newline + 
-//    			"		</tr>	</tbody>" + newline + 
-//    			"</table>";
-//    	
-//    	String multipleFails = WebAdminRenderer.renderJobFailStats();
-//    	assertEquals(multipleFailsTruth, multipleFails);
-//    }
+	 @Test
+     public void testGetFailedJobsStatsEmpty() {
+		 Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
+		 SchedulerStats stats = new SchedulerStats(); 
+		 when(sobjSched.getSchedulerStats()).thenReturn(stats);
+		 Assert.assertEquals(stats.getFailedJobTypes(), WebAdminRenderer.getFailedJobStats());
+	 }
+	 
+	 @Test
+     public void testGetFailedJobsStatsMultiple() {
+		 Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
+		 
+		 SchedulerStats stats = new SchedulerStats(); 
+		 stats.addFailedJob("Job name 1");
+		 stats.addFailedJob("Job name 2");
+		 
+		 when(sobjSched.getSchedulerStats()).thenReturn(stats);
+		 Assert.assertEquals(stats.getFailedJobTypes(), WebAdminRenderer.getFailedJobStats());
+		 Assert.assertEquals("Job name 1", WebAdminRenderer.getFailedJobStats().keySet().toArray()[1]);
+		 Assert.assertEquals(1, (int)WebAdminRenderer.getFailedJobStats().get("Job name 2"));
+	 }
 
     @Test
     public void testRenderLogsMultiple() {
