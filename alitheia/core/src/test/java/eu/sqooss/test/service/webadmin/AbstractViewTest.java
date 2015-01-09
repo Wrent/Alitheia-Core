@@ -61,15 +61,6 @@ public class AbstractViewTest {
 		Logger logger = mock(Logger.class);
 
 		when(core.getLogManager()).thenReturn(null, lm);
-		when(core.getDBService()).thenReturn(db);
-		when(core.getPluginAdmin()).thenReturn(pa);
-		when(core.getScheduler()).thenReturn(s);
-		when(core.getMetricActivator()).thenReturn(ma);
-		when(core.getTDSService()).thenReturn(tds);
-		when(core.getUpdater()).thenReturn(us);
-		when(core.getClusterNodeService()).thenReturn(cn);
-		when(core.getMetricActivator()).thenReturn(ma);
-		when(core.getSecurityManager()).thenReturn(sm);
 		when(lm.createLogger(anyString())).thenReturn(logger);
 
 		reinitAbstractView();
@@ -88,6 +79,18 @@ public class AbstractViewTest {
 			reinitAbstractView();
 			Assert.assertEquals(core, field.get(aw));
 
+			
+			when(core.getDBService()).thenReturn(db, null);
+			when(core.getPluginAdmin()).thenReturn(pa, null);
+			when(core.getScheduler()).thenReturn(s, null);
+			when(core.getMetricActivator()).thenReturn(ma, null);
+			when(core.getTDSService()).thenReturn(tds, null);
+			when(core.getUpdater()).thenReturn(us, null);
+			when(core.getClusterNodeService()).thenReturn(null, cn);
+			when(core.getMetricActivator()).thenReturn(ma, null);
+			when(core.getSecurityManager()).thenReturn(sm, null);
+			doNothing().when(logger).debug(anyString());
+			
 			// test Logger manager and logger
 			reinitAbstractView();
 			field = getField("sobjLogManager");
@@ -95,7 +98,7 @@ public class AbstractViewTest {
 			field = getField("sobjLogger");
 			Assert.assertEquals(logger, field.get(aw));
 
-			// test all the other fields
+			// test all the other fields			
 			field = getField("sobjDB");
 			Assert.assertEquals(db, field.get(aw));
 			field = getField("sobjPA");
@@ -108,10 +111,13 @@ public class AbstractViewTest {
 			Assert.assertEquals(tds, field.get(aw));
 			field = getField("sobjUpdater");
 			Assert.assertEquals(us, field.get(aw));
-			field = getField("sobjClusterNode");
-			Assert.assertEquals(cn, field.get(aw));
 			field = getField("sobjSecurity");
 			Assert.assertEquals(sm, field.get(aw));
+			
+			reinitAbstractView();
+			field = getField("sobjClusterNode");
+			Assert.assertEquals(cn, field.get(aw));
+			verify(logger, times(8)).debug(anyString());
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
