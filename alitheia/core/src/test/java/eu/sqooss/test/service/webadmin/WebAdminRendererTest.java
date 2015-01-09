@@ -36,32 +36,32 @@ public class WebAdminRendererTest {
 	{
     }
         
-    @Test
-    public void testRenderJobFailStatsEmpty() {
-    	
-    	Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
-    	
-    	SchedulerStats stats = new SchedulerStats(); 
-    	when(sobjSched.getSchedulerStats()).thenReturn(stats);
-
-    	String noFailsTruth = 
-    			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">" + newline +
-    			"	<thead>" + newline + 
-    			"		<tr>" + newline + 
-    			"			<td>Job Type</td>" + newline + 
-    			"			<td>Num Jobs Failed</td>" + newline + 
-    			"		</tr>" + newline + 
-    			"	</thead>" + newline + 
-    			"	<tbody>" + newline + 
-    			"		<tr>" + newline + 
-    			"			<td>No failures</td>" + newline + 
-    			"			<td>&nbsp;			</td>" + newline + 
-    			"		</tr>	</tbody>" + newline + 
-    			"</table>";
-    	    	
-    	String noFails = WebAdminRenderer.renderJobFailStats();
-    	assertEquals(noFailsTruth, noFails);    	
-    }
+//    @Test
+//    public void testRenderJobFailStatsEmpty() {
+//    	
+//    	Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
+//    	
+//    	SchedulerStats stats = new SchedulerStats(); 
+//    	when(sobjSched.getSchedulerStats()).thenReturn(stats);
+//
+//    	String noFailsTruth = 
+//    			"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">" + newline +
+//    			"	<thead>" + newline + 
+//    			"		<tr>" + newline + 
+//    			"			<td>Job Type</td>" + newline + 
+//    			"			<td>Num Jobs Failed</td>" + newline + 
+//    			"		</tr>" + newline + 
+//    			"	</thead>" + newline + 
+//    			"	<tbody>" + newline + 
+//    			"		<tr>" + newline + 
+//    			"			<td>No failures</td>" + newline + 
+//    			"			<td>&nbsp;			</td>" + newline + 
+//    			"		</tr>	</tbody>" + newline + 
+//    			"</table>";
+//    	    	
+//    	String noFails = WebAdminRenderer.renderJobFailStats();
+//    	assertEquals(noFailsTruth, noFails);    	
+//    }
     
 
     @Test
