@@ -99,6 +99,7 @@ public class AdminServlet extends HttpServlet {
             WebadminService webadmin,
             Logger logger,
             VelocityEngine ve) {
+    	
         AdminServlet.webadmin = webadmin;
         AdminServlet.bc = bc;
         this.ve = ve;
@@ -206,7 +207,7 @@ public class AdminServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request,
+    protected void doPost(HttpServletRequest request, 
                           HttpServletResponse response) throws ServletException,
                                                                IOException {
         if (!db.isDBSessionActive()) {
@@ -243,6 +244,7 @@ public class AdminServlet extends HttpServlet {
         }
     }
     
+    //TODO according to comments should be able to handle a null response, mimetype, path
     /**
      * Sends a resource (stored in the jar file) as a response. The mime-type
      * is set to @p mimeType . The @p path to the resource should start
@@ -251,8 +253,6 @@ public class AdminServlet extends HttpServlet {
      * Test cases:
      *   - null mimetype, null path, bad path, relative path, path not found,
      *   - null response
-     *
-     * TODO: How to simulate conditions that will cause IOException
      */
     protected void sendResource(HttpServletResponse response, Pair<String,String> source)
         throws ServletException, IOException {
@@ -261,6 +261,17 @@ public class AdminServlet extends HttpServlet {
         if ( istream == null ) {
             throw new IOException("Path not found: " + source.first);
         }
+        //TODO Added in refactoring
+        if (response == null) {
+        	throw new IllegalArgumentException("Received HttpServletResponse is null");
+        }
+        if (source.first == null) {
+        	throw new IllegalArgumentException("Received path is null");
+        }
+        if (source.second == null) {
+        	throw new IllegalArgumentException("Received mime is null");
+        }
+        
 
         byte[] buffer = new byte[1024];
         int bytesRead = 0;
@@ -268,7 +279,8 @@ public class AdminServlet extends HttpServlet {
 
         response.setContentType(source.second);
         ServletOutputStream ostream = response.getOutputStream();
-        while ((bytesRead = istream.read(buffer)) > 0) {
+        while ((bytesRead = istream.read(buffer)) > 0) 
+        {
             ostream.write(buffer,0,bytesRead);
             totalBytes += bytesRead;
         }
@@ -294,7 +306,7 @@ public class AdminServlet extends HttpServlet {
         createSubstitutions(request);
         response.setContentType("text/html");
         t.merge(vc, writer);
-
+ 
         print.print(writer.toString());
     }
 
@@ -313,6 +325,7 @@ public class AdminServlet extends HttpServlet {
         vc.put("UPTIME", WebAdminRenderer.getUptime());
 
         // Object-based substitutions
+        //TODO accessing a protected static variable of another class hierarchy
         vc.put("scheduler", adminView.sobjSched.getSchedulerStats());
         vc.put("tr",tr); // translations proxy
         vc.put("admin",adminView);
