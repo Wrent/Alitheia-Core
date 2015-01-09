@@ -33,6 +33,7 @@
 
 package eu.sqooss.impl.service.webadmin;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -154,25 +155,18 @@ public class WebAdminRenderer  extends AbstractView {
         return result.toString();
     }
 
-    //TODO multiple returns, weird branching, other functions as well
     /**
-     * Creates an HTML unordered list displaying the contents of the current system log
-     *
-     * @return a String representing the HTML unordered list items
+     * Creates an HTML safe list of the logs
+     * 
+     * @return List with HTML safe log strings
      */
-    public static String renderLogs() {
+    public static List<String> getLogs() {
         String[] names = sobjLogManager.getRecentEntries();
-
-        if ((names != null) && (names.length > 0)) {
-            StringBuilder b = new StringBuilder();
-            for (String s : names) {
-                b.append("\t\t\t\t\t<li>" + StringUtils.makeXHTMLSafe(s) + "</li>\n");
-            }
-
-            return b.toString();
-        } else {
-            return "\t\t\t\t\t<li>&lt;none&gt;</li>\n";
+        ArrayList<String> logs = new ArrayList<String>();
+        for (String name : names) {
+        	logs.add(StringUtils.makeXHTMLSafe(name));
         }
+        return logs;
     }
 
     /**
