@@ -114,7 +114,7 @@ public class WebadminServiceImplTest {
         
     }
     
-    private void initStartUpTests() {
+    protected void initStartUpTests() {
     	MockitoAnnotations.initMocks(this);
     	
     	impl.setInitParams(bc, logger);
