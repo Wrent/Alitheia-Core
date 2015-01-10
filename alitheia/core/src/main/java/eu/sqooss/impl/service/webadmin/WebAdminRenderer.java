@@ -157,23 +157,13 @@ public class WebAdminRenderer  extends AbstractView {
         result.append("</table>");
         return result.toString();
     }
-
-    //TODO add description
-    //TODO multiple returns
-    public static String renderJobRunStats() {
-        StringBuilder result = new StringBuilder();
-        List<String> rjobs = sobjSched.getSchedulerStats().getRunJobs();
-        if (rjobs.size() == 0) {
-            return "No running jobs";
-        }
-        result.append("<ul>\n");
-        for(String s : rjobs) {
-            result.append("\t<li>");
-            result.append(s);
-            result.append("\t</li>\n");
-        }
-        result.append("</ul>\n");
-        return result.toString();
+    
+    /**
+     * Returns List of names of running jobs.
+     * @return List of Strings - running jobs names
+     */
+    public static List<String> getRunningJobs() {
+    	return sobjSched.getSchedulerStats().getRunJobs();
     }
    
 }

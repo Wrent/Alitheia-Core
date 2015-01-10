@@ -190,30 +190,23 @@ public class WebAdminRendererTest {
 	}
 
 	@Test
-	public void testRenderJobRunStatsEmpty() {
-		String jobsTruth = "No running jobs";
-
+	public void testGetRunningJobsEmpty() {
 		Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
 		SchedulerStats stats = new SchedulerStats();
 		when(sobjSched.getSchedulerStats()).thenReturn(stats);
 
-		String jobsOut = WebAdminRenderer.renderJobRunStats();
-		assertEquals(jobsTruth, jobsOut);
+		Assert.assertEquals(stats.getRunJobs(), WebAdminRenderer.getRunningJobs());
 	}
-
+	
 	@Test
-	public void testRenderJobRunStatsMultiple() {
-		String jobsTruth = "<ul>" + newline + "	<li>job	</li>" + newline
-				+ "	<li>job	</li>" + newline + "</ul>" + newline;
-
+	public void testGetRunningJobsMultiple() {
 		Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
 		SchedulerStats stats = new SchedulerStats();
 		stats.addRunJob(job1);
 		stats.addRunJob(job2);
 		when(sobjSched.getSchedulerStats()).thenReturn(stats);
 
-		String jobsOut = WebAdminRenderer.renderJobRunStats();
-		assertEquals(jobsTruth, jobsOut);
+		Assert.assertEquals(stats.getRunJobs(), WebAdminRenderer.getRunningJobs());
 	}
 
 	@Test
