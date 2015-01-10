@@ -45,8 +45,8 @@
     </distributionManagement>
 
     <properties>
-        <org.osgi.service.http.port>8080</org.osgi.service.http.port>
-        <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+        <org.osgi.service.http.port>3030</org.osgi.service.http.port>
+        <org.osgi.service.http.port.secure>3443</org.osgi.service.http.port.secure>
 
         <!-- MySQL and HSQLDB supported out of the box. Uncomment one of the sections below -->
         <!-- MySQL 
