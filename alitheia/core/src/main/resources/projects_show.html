@@ -1,0 +1,68 @@
+#set($selProject = $projects.getProjectById($request.getParameter("projectId")))
+<form id="projects" name="projects" method="post" action="/projects">
+  <fieldset>
+    <legend>
+    Project information
+    </legend>
+    <table class="borderless">
+      <tr>
+        <td class="borderless" style="width:100px;">
+          <b>Project name</b>
+        </td>
+        <td class="borderless">
+          $selProject.getName()
+        </td>
+      </tr>
+      <tr>
+        <td class="borderless" style="width:100px;">
+          <b>Homepage</b>
+        </td>
+        <td class="borderless">
+          $selProject.getWebsiteUrl()
+        </td>
+      </tr>
+      <tr>
+        <td class="borderless" style="width:100px;">
+          <b>Contact e-mail</b>
+        </td>
+        <td class="borderless">
+          $selProject.getContactUrl()
+        </td>
+      </tr>
+      <tr>
+        <td class="borderless" style="width:100px;">
+          <b>Bug database</b>
+        </td>
+        <td class="borderless">
+          $selProject.getBtsUrl()
+        </td>
+      </tr>
+      <tr>
+        <td class="borderless" style="width:100px;">
+          <b>Mailing list</b>
+        </td>
+        <td class="borderless">
+          $selProject.getMailUrl()
+        </td>
+      </tr>
+      <tr>
+        <td class="borderless" style="width:100px;">
+          <b>Source code</b>
+        </td>
+        <td class="borderless">
+          $selProject.getScmUrl()
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="borderless">
+          ##back button
+          <input type="button" class="install" style="width: 100px;" value="$tr.label('btn_back')" onclick="javascript:document.projects.submit();"/>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  ##addHiddenFields
+  <input type="hidden" id="reqAction" name="reqAction" value=""> ## "Action type" input field
+  <input type="hidden" id="projectId" name="projectId" value="$reqValProjectId"> ## "Project Id" input field
+  <input type="hidden" id="reqParSyncPlugin" name="reqParSyncPlugin" value=""> ## "Plug-in hashcode" input field
+</form>

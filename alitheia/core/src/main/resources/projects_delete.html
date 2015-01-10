@@ -1,0 +1,28 @@
+#set($selProject = $projects.getProjectById($request.getParameter("projectId")))
+
+<form id="projects" name="projects" method="post" action="/projects">
+  <fieldset>
+    <legend>
+      $tr.label("l0059"): $selProject.getName()
+    </legend>
+    <table class="borderless">
+      <tr> ## Confirmation message
+        <td class="borderless">
+          <b>$tr.message("delete_project")</b>
+        </td>
+      </tr>
+      <tr> ## Tool-bar\
+        <td class="borderless">
+          ##Confirm
+          <input type="button" class="install" style="width: 100px;" value="$tr.label('l0006')" onclick="javascript:document.getElementById('reqAction').value='conRemProject';document.projects.submit();"/>
+          ## Cancel
+          <input type="button" class="install" style="width: 100px;" value="$tr.label('l0004')" onclick="javascript:document.projects.submit();"/>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  ##addHiddenFields
+  <input type="hidden" id="reqAction" name="reqAction" value=""> ## "Action type" input field
+  <input type="hidden" id="projectId" name="projectId" value="$reqValProjectId"> ## "Project Id" input field
+  <input type="hidden" id="reqParSyncPlugin" name="reqParSyncPlugin" value=""> ## "Plug-in hashcode" input field
+</form>

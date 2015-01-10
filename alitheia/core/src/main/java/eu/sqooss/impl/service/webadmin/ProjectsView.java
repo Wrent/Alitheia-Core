@@ -34,6 +34,7 @@
 package eu.sqooss.impl.service.webadmin;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -219,6 +220,10 @@ public class ProjectsView extends AbstractView {
             vc.put("RESULTS", aa.results());
         }
 	}
+	
+	private static StoredProject getProjectById(Long id){
+		return sobjDB.findObjectById(StoredProject.class, id);
+	}
 
 	// ---------------------------------------------------------------
 	// Trigger update on all resources for that project
@@ -289,15 +294,14 @@ public class ProjectsView extends AbstractView {
         // ===================================================================
         // "Show project info" view
         // ===================================================================
-        if ((reqValAction.equals(ACT_REQ_SHOW_PROJECT))
-                && (selProject != null)) {
+        if ((reqValAction.equals(ACT_REQ_SHOW_PROJECT)) && (selProject != null)) {
             // Create the field-set
             b.append(sp(in++) + "<fieldset>\n");
             b.append(sp(in) + "<legend>"
                     + "Project information"
                     + "</legend>\n");
             b.append(sp(in++) + "<table class=\"borderless\">\n");
-            // Create the input fields
+            // Create the info fields
             b.append(normalInfoRow(
                     "Project name", selProject.getName(), in));
             b.append(normalInfoRow(
@@ -441,8 +445,7 @@ public class ProjectsView extends AbstractView {
                 b.append(sp(in++) + "<tbody>\n");
                 for (StoredProject nextPrj : projects) {
                     boolean selected = false;
-                    if ((selProject != null)
-                            && (selProject.getId() == nextPrj.getId())) {
+                    if ((selProject != null) && (selProject.getId() == nextPrj.getId())) {
                         selected = true;
                     }
                     b.append(sp(in++) + "<tr class=\""
@@ -541,7 +544,55 @@ public class ProjectsView extends AbstractView {
         // ===============================================================
         b.append(sp(--in) + "</form>\n");
     }
-
+    
+    public static Set<StoredProject> getProjects() {
+    	return ClusterNode.thisNode().getProjects();
+    }
+    
+    public static String getLastProjectVersion(StoredProject project) {
+    	String lastVersion = getLbl("l0051");
+        ProjectVersion v = ProjectVersion.getLastProjectVersion(project);
+        if (v != null) {
+            lastVersion = String.valueOf(v.getSequence()) + "(" + v.getRevisionId() + ")";
+        }
+        return lastVersion;
+    }
+    
+    public static String getLastEmailDate(StoredProject project) {
+    	String lastDate = getLbl("l0051");
+        MailMessage mm = MailMessage.getLatestMailMessage(project);
+        if (mm != null) {
+        	lastDate = mm.getSendDate().toString();
+        }
+        return lastDate;
+    }
+    
+    public static String getLastBug(StoredProject project) {
+    	String lastBug = getLbl("l0051");
+    	Bug bug = Bug.getLastUpdate(project);
+        if (bug != null) {
+        	lastBug = bug.getBugID();
+        }
+        return lastBug;
+    }
+    
+    public static String getEvalState(StoredProject project) {
+        String evalState = getLbl("project_not_evaluated");
+        if (project.isEvaluated()) {
+        	evalState = getLbl("project_is_evaluated");
+        }
+        return evalState;
+    }
+    
+    public static String getClusternode(StoredProject project) {
+	    String nodename = null;
+	    if (project.getClusternode() != null) {
+	        nodename = project.getClusternode().getName();
+	    } else {
+	        nodename = "(local)";
+	    }
+	    return nodename;
+    }
 
     private static void addHiddenFields(StoredProject selProject,
             StringBuilder b,
@@ -614,6 +665,7 @@ public class ProjectsView extends AbstractView {
             b.append(sp(in) + "</optgroup>");
             b.append(sp(in) + "</select>");
         }
+        
 
         // Trigger updater
         b.append(sp(in) + "<input type=\"button\" class=\"install\" value=\"Run Updater\" onclick=\"javascript:document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_CON_UPD + "';" + SUBMIT + "\"" + ((selProject != null)? "" : " disabled") + ">\n");
@@ -626,8 +678,30 @@ public class ProjectsView extends AbstractView {
         b.append(sp(--in) + "</td>\n");
         b.append(sp(--in) + "</tr>\n");
     }
+
+    public static Set<Updater> getUpdaters(int selProjectId, String updaterStage) {
+    	Set<Updater> updaters;
+    	StoredProject selProject = sobjDB.findObjectById(StoredProject.class, selProjectId);
+    	
+    	//TODO move to separate function?
+    	UpdaterStage stage;
+    	if(updaterStage == "inference")
+    		stage = UpdaterStage.INFERENCE;
+    	else if(updaterStage == "import")
+    		stage = UpdaterStage.IMPORT;
+    	else if(updaterStage == "parse")
+    		stage = UpdaterStage.PARSE;
+		else
+    		stage = UpdaterStage.DEFAULT;
+
+    	if(selProject != null)
+    		updaters = sobjUpdater.getUpdaters(selProject, stage);
+    	else
+    		updaters =  Collections.emptySet();
+    	return updaters;
+    }
     
-    private static String getClusterName() {
+    public static String getClusterName() {
     	return sobjClusterNode.getClusterNodeName();
     }
     

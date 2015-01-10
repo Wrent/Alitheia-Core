@@ -1,15 +1,25 @@
 #set($section=3)
+#set($reqValProjectId = $request.getParameter("projectId"))
+#set($selProject = $projects.getProjectById($request.getParameter("projectId")))
+
 #parse("header.inc")
       <div id="main">
 #parse("menu.inc")
         <div id="contents">
           <h2>$tr.label("projects_mngm")</h2>
           <div id="table">
-#if (!$request.getParameter("reqAction"))
-	#parse("projects_home.html")
-#end	  
+            #if($request.getParameter("reqAction") == "conShowProject" && $selProject)
+              #parse("projects_show.html")
+            #elseif($request.getParameter("reqAction") == "reqAddProject")
+              #parse("projects_add.html")
+            #elseif($request.getParameter("reqAction") == "reqRemProject" && $selProject)
+              #parse("projects_delete.html")
+            #else
+              #parse("projects_list.html")
+            #end
           </div>
-          <div id="tableold">
+          
+          <div id="table">
             $projects.render($request)
           </div>
         </div>
