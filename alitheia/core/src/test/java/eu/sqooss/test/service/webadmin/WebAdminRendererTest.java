@@ -111,83 +111,31 @@ public class WebAdminRendererTest {
 	}
 
 	@Test
-	public void testRenderJobWaitStatsEmpty() {
+	public void testGetWaitingJobsEmpty() {
 		Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
-
 		SchedulerStats stats = new SchedulerStats();
 		when(sobjSched.getSchedulerStats()).thenReturn(stats);
-
-		String noFailsTruth = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">"
-				+ newline
-				+ "	<thead>"
-				+ newline
-				+ "		<tr>"
-				+ newline
-				+ "			<td>Job Type</td>"
-				+ newline
-				+ "			<td>Num Jobs Waiting</td>"
-				+ newline
-				+ "		</tr>"
-				+ newline
-				+ "	</thead>"
-				+ newline
-				+ "	<tbody>"
-				+ newline
-				+ "		<tr>"
-				+ newline
-				+ "			<td>No failures</td>"
-				+ newline
-				+ "			<td>&nbsp;			</td>"
-				+ newline
-				+ "		</tr>	</tbody>"
-				+ newline + "</table>";
-
-		String noFails = WebAdminRenderer.renderJobWaitStats();
-		assertEquals(noFailsTruth, noFails);
+		Assert.assertEquals(stats.getWaitingJobTypes(),
+				WebAdminRenderer.getWaitingJobs());
 	}
 
 	@Test
-	public void testRenderJobWaitStatsMultiple() {
+	public void testGetWaitingJobsMultiple() {
 		Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
 
 		SchedulerStats stats = new SchedulerStats();
-		stats.addWaitingJob("Job name 1");
-		stats.addWaitingJob("Job name 2");
+		stats.addFailedJob("Job name 1");
+		stats.addFailedJob("Job name 2");
 
 		when(sobjSched.getSchedulerStats()).thenReturn(stats);
-
-		String jobsTruth = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">"
-				+ newline
-				+ "	<thead>"
-				+ newline
-				+ "		<tr>"
-				+ newline
-				+ "			<td>Job Type</td>"
-				+ newline
-				+ "			<td>Num Jobs Waiting</td>"
-				+ newline
-				+ "		</tr>"
-				+ newline
-				+ "	</thead>"
-				+ newline
-				+ "	<tbody>"
-				+ newline
-				+ "		<tr>"
-				+ newline
-				+ "			<td>Job name 2</td>"
-				+ newline
-				+ "			<td>1			</td>"
-				+ newline
-				+ "		</tr>		<tr>"
-				+ newline
-				+ "			<td>Job name 1</td>"
-				+ newline
-				+ "			<td>1			</td>"
-				+ newline + "		</tr>	</tbody>" + newline + "</table>";
-
-		String jobsOut = WebAdminRenderer.renderJobWaitStats();
-		assertEquals(jobsTruth, jobsOut);
+		Assert.assertEquals(stats.getWaitingJobTypes(),
+				WebAdminRenderer.getWaitingJobs());
+		Assert.assertEquals("Job name 1", WebAdminRenderer.getWaitingJobs()
+				.keySet().toArray()[1]);
+		Assert.assertEquals(1,
+				(int) WebAdminRenderer.getWaitingJobs().get("Job name 2"));
 	}
+
 
 	@Test
 	public void testGetRunningJobsEmpty() {
