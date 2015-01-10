@@ -566,14 +566,28 @@ public class ProjectsView extends AbstractView {
         b.append(sp(in++) + "<tr class=\"subhead\">\n");
         b.append(sp(in++) + "<td>View</td><td colspan=\"6\">\n");
         // Refresh button
-        b.append(sp(in) + "<input type=\"button\"" + " class=\"install\"" + " style=\"width: 100px;\"" + " value=\"" + getLbl("l0008") + "\"" + " onclick=\"javascript:" + "window.location='/projects" + ((selProject != null)
-                ? "?" + REQ_PAR_PROJECT_ID + "=" + selProject.getId()
-                : "") + "';\"" + ">");
+        b.append(sp(in) + "<input type=\"button\"" + 
+        		" class=\"install\"" + " style=\"width: 100px;\"" + 
+        		" value=\"" + getLbl("l0008") + "\"" + 
+        		" onclick=\"javascript:" + 
+        			"window.location='/projects" + 
+        		    ((selProject != null) ? "?" + REQ_PAR_PROJECT_ID + "=" + selProject.getId() : "") 
+        		    + "';\"" + ">");
         b.append("</td></tr><tr class=\"subhead\"><td>Manage</td><td colspan='6'>\n");
         // Add project button
-        b.append(sp(in) + "<input type=\"button\"" + " class=\"install\"" + " style=\"width: 100px;\"" + " value=\"" + getLbl("add_project") + "\"" + " onclick=\"javascript:" + "document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_REQ_ADD_PROJECT + "';" + SUBMIT + "\">\n");
+        b.append(sp(in) + "<input type=\"button\"" + 
+        		" class=\"install\"" + 
+        		" style=\"width: 100px;\"" + 
+        		" value=\"" + getLbl("add_project") + "\"" + 
+        		" onclick=\"javascript:" + "document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_REQ_ADD_PROJECT + "';" + SUBMIT + "\">\n");
         // Remove project button
-        b.append(sp(in) + "<input type=\"button\"" + " class=\"install\"" + " style=\"width: 100px;\"" + " value=\"" + getLbl("l0059") + "\"" + " onclick=\"javascript:" + "document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_REQ_REM_PROJECT + "';" + SUBMIT + "\"" + ((selProject != null) ? "" : " disabled") + ">");
+        b.append(sp(in) + "<input type=\"button\"" + 
+        " class=\"install\"" + 
+        		" style=\"width: 100px;\"" + 
+        		" value=\"" + getLbl("l0059") + "\"" + 
+        		" onclick=\"javascript:" + "document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_REQ_REM_PROJECT + "';" + 
+        		SUBMIT + "\"" + ((selProject != null) ? "" : " disabled") + ">");
+        
         b.append("</td></tr><tr class='subhead'><td>Update</td><td colspan='4'>\n");
         
         if (selProject != null) {
@@ -604,14 +618,17 @@ public class ProjectsView extends AbstractView {
         // Trigger updater
         b.append(sp(in) + "<input type=\"button\" class=\"install\" value=\"Run Updater\" onclick=\"javascript:document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_CON_UPD + "';" + SUBMIT + "\"" + ((selProject != null)? "" : " disabled") + ">\n");
         // Trigger all updates
-        b.append(sp(in) + "<input type=\"button\"" + " class=\"install\"" + " value=\"Run All Updaters\" onclick=\"javascript:document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_CON_UPD_ALL + "';" + SUBMIT + "\"" + (((selProject != null))
-                ? "" : " disabled") + ">\n");
+        b.append(sp(in) + "<input type=\"button\"" + " class=\"install\"" + " value=\"Run All Updaters\" onclick=\"javascript:document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_CON_UPD_ALL + "';" + SUBMIT + "\"" + (((selProject != null)) ? "" : " disabled") + ">\n");
         b.append(sp(--in) + "</td>\n");
         b.append(sp(--in) + "<td colspan=\"2\" align=\"right\">\n");
-     // Trigger updates on host
+        // Trigger updates on host
         b.append(sp(in) + "<input type=\"button\"" + " class=\"install\" value=\"Update all on "+ sobjClusterNode.getClusterNodeName() +"\"" + " onclick=\"javascript:" + "document.getElementById('" + REQ_PAR_ACTION + "').value='" + ACT_CON_UPD_ALL_NODE + "';" + SUBMIT + "\">\n");
         b.append(sp(--in) + "</td>\n");
         b.append(sp(--in) + "</tr>\n");
+    }
+    
+    private static String getClusterName() {
+    	return sobjClusterNode.getClusterNodeName();
     }
     
     private static void showLastAppliedVersion(
