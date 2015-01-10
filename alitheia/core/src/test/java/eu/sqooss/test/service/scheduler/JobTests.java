@@ -1,45 +1,16 @@
 package eu.sqooss.test.service.scheduler;
 
+import java.lang.reflect.Field;
+
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.*;
-
-import static org.mockito.Mockito.when;
-import eu.sqooss.impl.service.scheduler.SchedulerServiceImpl;
-import eu.sqooss.service.scheduler.Job;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Field;
-import java.util.Date;
-
-import junit.framework.Assert;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
-import org.powermock.*;
 
-import eu.sqooss.impl.service.webadmin.AbstractView;
-import eu.sqooss.impl.service.webadmin.WebAdminRenderer;
-import eu.sqooss.service.logging.LogManager;
 import eu.sqooss.service.scheduler.Job;
-import eu.sqooss.service.scheduler.Scheduler;
-import eu.sqooss.service.scheduler.SchedulerStats;
-
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 @PrepareForTest(Job.class)
 public class JobTests {

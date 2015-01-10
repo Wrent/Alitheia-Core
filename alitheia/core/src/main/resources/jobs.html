@@ -14,6 +14,7 @@
         
           <h2>Running Jobs</h2>
           <div id="bundles">
+            #parse("jobrunstats.html")
             $admin.renderJobRunStats()
           </div>
 
@@ -25,7 +26,6 @@
           <h2>Job failure statistics</h2> 
           <a href="alljobs">Details ...</a>
           <div id="bundles">
-    	    ##$admin.renderJobFailStats()
     	    #parse("jobfailstats.html")
     	  </div>
 	</div>

@@ -63,14 +63,29 @@ public class WebAdminRenderer  extends AbstractView {
         super(bundlecontext, vc);
     }
     
+    /**
+     * Returns the statistics about Failed Jobs.
+     * 
+     * @return HashMap with Failed Jobs stats
+     */
     public static HashMap<String,Integer> getFailedJobStats() {
     	return sobjSched.getSchedulerStats().getFailedJobTypes();
     }
 
+    /**
+     * Returns the array of Failed Jobs
+     * 
+     * @return Array of Failed Jobs
+     */
     public static Job[] getFailedJobs() {
     	return sobjSched.getFailedQueue();
     }
     
+    /**
+     * Determines whether there is no failed job.
+     * 
+     * @return boolean Is there no failed job?
+     */
     public static boolean isFailedJobsEmpty() {
     	Job[] jobs = sobjSched.getFailedQueue();
     	if ((jobs != null) && (jobs.length > 0)) {
