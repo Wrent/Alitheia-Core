@@ -67,94 +67,19 @@ public class WebAdminRenderer  extends AbstractView {
     	return sobjSched.getSchedulerStats().getFailedJobTypes();
     }
 
-    //TODO commented stuff?
-    //TODO too long, multiple try catches, split up method
-    /**
-     * Creates an HTML table with information about the jobs that
-     * failed and the recorded exceptions
-     * @return
-     */
-    public static String renderFailedJobs() {
-        StringBuilder result = new StringBuilder();
-        Job[] jobs = sobjSched.getFailedQueue();
-        result.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n");
-        result.append("\t<thead>\n");
-        result.append("\t\t<tr>\n");
-        result.append("\t\t\t<td>Job Type</td>\n");
-        result.append("\t\t\t<td>Exception type</td>\n");
-        result.append("\t\t\t<td>Exception text</td>\n");
-        result.append("\t\t\t<td>Exception backtrace</td>\n");
-        result.append("\t\t</tr>\n");
-        result.append("\t</thead>\n");
-        result.append("\t<tbody>\n");
-
-        if ((jobs != null) && (jobs.length > 0)) {
-            for(Job j: jobs) {
-                if (j == null) continue;
-                result.append("\t\t<tr>\n\t\t\t<td>");
-                if (j.getClass() != null) { //TODO How does this ever fail? remove if, and try/catch
-                    try {
-                        //result.append(j.getClass().getPackage().getName());
-                        //result.append(". " + j.getClass().getSimpleName());
-                		result.append(j.toString());
-                    }
-                    catch (NullPointerException ex) {
-                        result.append("<b>NA<b>");
-                    }
-                }
-                else {
-                    result.append("<b>NA<b>");
-                }
-                result.append("</td>\n\t\t\t<td>");
-                Exception e = j.getErrorException();
-                if (e != null) {
-                    try {
-                        result.append(e.getClass().getPackage().getName());
-                        result.append(". " + e.getClass().getSimpleName());
-                    }
-                    catch (NullPointerException ex) {
-                        result.append("<b>NA<b>");
-                    }
-                }
-                else {
-                    result.append("<b>NA</b>");
-                }
-                result.append("</td>\n\t\t\t<td>");
-                try {
-                    result.append(e.getMessage());
-                }
-                catch (NullPointerException ex) {
-                    result.append("<b>NA<b>");
-                }
-                result.append("</td>\n\t\t\t<td>");
-                if ((e != null) && (e.getStackTrace() != null)) {
-                    for(StackTraceElement m: e.getStackTrace()) {
-                        if (m == null) continue;
-                        result.append(m.getClassName());
-                        result.append(". ");
-                        result.append(m.getMethodName());
-                        result.append("(), (");
-                        result.append(m.getFileName());
-                        result.append(":");
-                        result.append(m.getLineNumber());
-                        result.append(")<br/>");
-                    }
-                }
-                else {
-                    result.append("<b>NA</b>");
-                }
-                result.append("\t\t\t</td>\n\t\t</tr>");
-            }
-        }
-        else {
-            result.append ("<tr><td colspan=\"4\">No failed jobs.</td></tr>");
-        }
-        result.append("\t</tbody>\n");
-        result.append("</table>");
-
-        return result.toString();
+    public static Job[] getFailedJobs() {
+    	return sobjSched.getFailedQueue();
     }
-
+    
+    public static boolean isFailedJobsEmpty() {
+    	Job[] jobs = sobjSched.getFailedQueue();
+    	if ((jobs != null) && (jobs.length > 0)) {
+    		return false;
+    	} else {
+    		return true;
+    	}
+    }
+    
     /**
      * Creates an HTML safe list of the logs
      * 
@@ -235,4 +160,6 @@ public class WebAdminRenderer  extends AbstractView {
         result.append("</ul>\n");
         return result.toString();
     }
+   
 }
+
