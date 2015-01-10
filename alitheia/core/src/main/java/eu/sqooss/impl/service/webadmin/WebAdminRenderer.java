@@ -43,109 +43,111 @@ import org.osgi.framework.BundleContext;
 
 import eu.sqooss.service.scheduler.Job;
 import eu.sqooss.service.util.StringUtils;
+
 //TODO why is this not a static class?
 /**
- * The WebAdminRender class provides functions for rendering content
- * to be displayed within the WebAdmin interface.
+ * The WebAdminRender class provides functions for rendering content to be
+ * displayed within the WebAdmin interface.
  *
  * @author, Paul J. Adams <paul.adams@siriusit.co.uk>
  * @author, Boryan Yotov <b.yotov@prosyst.com>
  */
-public class WebAdminRenderer  extends AbstractView {
-    /**
-     * Represents the system time at which the WebAdminRender (and
-     * thus the system) was started. This is required for the system
-     * uptime display.
-     */
-    private static long startTime = new Date().getTime();
+public class WebAdminRenderer extends AbstractView {
+	/**
+	 * Represents the system time at which the WebAdminRender (and thus the
+	 * system) was started. This is required for the system uptime display.
+	 */
+	private static long startTime = new Date().getTime();
 
-    public WebAdminRenderer(BundleContext bundlecontext, VelocityContext vc) {
-        super(bundlecontext, vc);
-    }
-    
-    /**
-     * Returns the statistics about Failed Jobs.
-     * 
-     * @return HashMap with Failed Jobs stats
-     */
-    public static HashMap<String,Integer> getFailedJobStats() {
-    	return sobjSched.getSchedulerStats().getFailedJobTypes();
-    }
+	public WebAdminRenderer(BundleContext bundlecontext, VelocityContext vc) {
+		super(bundlecontext, vc);
+	}
 
-    /**
-     * Returns the array of Failed Jobs
-     * 
-     * @return Array of Failed Jobs
-     */
-    public static Job[] getFailedJobs() {
-    	return sobjSched.getFailedQueue();
-    }
-    
-    /**
-     * Determines whether there is no failed job.
-     * 
-     * @return boolean Is there no failed job?
-     */
-    public static boolean isFailedJobsEmpty() {
-    	Job[] jobs = sobjSched.getFailedQueue();
-    	if ((jobs != null) && (jobs.length > 0)) {
-    		return false;
-    	} else {
-    		return true;
-    	}
-    }
-    
-    /**
-     * Creates an HTML safe list of the logs
-     * 
-     * @return List with HTML safe log strings
-     */
-    public static List<String> getLogs() {
-        String[] names = sobjLogManager.getRecentEntries();
-        ArrayList<String> logs = new ArrayList<String>();
-        for (String name : names) {
-        	logs.add(StringUtils.makeXHTMLSafe(name));
-        }
-        return logs;
-    }
+	/**
+	 * Returns the statistics about Failed Jobs.
+	 * 
+	 * @return HashMap with Failed Jobs stats
+	 */
+	public static HashMap<String, Integer> getFailedJobStats() {
+		return sobjSched.getSchedulerStats().getFailedJobTypes();
+	}
 
-    /**
-     * Returns a string representing the uptime of the Alitheia core
-     * in dd:hh:mm:ss format
-     */
-    public static String getUptime() {
-        long remainder;
-        long currentTime = new Date().getTime();
-        long timeRunning = currentTime - startTime;
+	/**
+	 * Returns the array of Failed Jobs
+	 * 
+	 * @return Array of Failed Jobs
+	 */
+	public static Job[] getFailedJobs() {
+		return sobjSched.getFailedQueue();
+	}
 
-        // Get the elapsed time in days, hours, mins, secs
-        int days = new Long(timeRunning / 86400000).intValue();
-        remainder = timeRunning % 86400000;
-        int hours = new Long(remainder / 3600000).intValue();
-        remainder = remainder % 3600000;
-        int mins = new Long(remainder / 60000).intValue();
-        remainder = remainder % 60000;
-        int secs = new Long(remainder / 1000).intValue();
+	/**
+	 * Determines whether there is no failed job.
+	 * 
+	 * @return boolean Is there no failed job?
+	 */
+	public static boolean isFailedJobsEmpty() {
+		Job[] jobs = sobjSched.getFailedQueue();
+		if ((jobs != null) && (jobs.length > 0)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
-        return String.format("%d:%02d:%02d:%02d", days, hours, mins, secs);
-    }
+	/**
+	 * Creates an HTML safe list of the logs
+	 * 
+	 * @return List with HTML safe log strings
+	 */
+	public static List<String> getLogs() {
+		String[] names = sobjLogManager.getRecentEntries();
+		ArrayList<String> logs = new ArrayList<String>();
+		if (names != null) {
+			for (String name : names) {
+				logs.add(StringUtils.makeXHTMLSafe(name));
+			}
+		}
+		return logs;
+	}
 
-    /**
-     * Returns the statistics about Waiting Jobs.
-     * 
-     * @return HashMap with Waiting Jobs stats
-     */
-    public static HashMap<String,Integer> getWaitingJobs() {
-    	return sobjSched.getSchedulerStats().getWaitingJobTypes();
-    }
-    
-    /**
-     * Returns List of names of running jobs.
-     * @return List of Strings - running jobs names
-     */
-    public static List<String> getRunningJobs() {
-    	return sobjSched.getSchedulerStats().getRunJobs();
-    }
-   
+	/**
+	 * Returns a string representing the uptime of the Alitheia core in
+	 * dd:hh:mm:ss format
+	 */
+	public static String getUptime() {
+		long remainder;
+		long currentTime = new Date().getTime();
+		long timeRunning = currentTime - startTime;
+
+		// Get the elapsed time in days, hours, mins, secs
+		int days = new Long(timeRunning / 86400000).intValue();
+		remainder = timeRunning % 86400000;
+		int hours = new Long(remainder / 3600000).intValue();
+		remainder = remainder % 3600000;
+		int mins = new Long(remainder / 60000).intValue();
+		remainder = remainder % 60000;
+		int secs = new Long(remainder / 1000).intValue();
+
+		return String.format("%d:%02d:%02d:%02d", days, hours, mins, secs);
+	}
+
+	/**
+	 * Returns the statistics about Waiting Jobs.
+	 * 
+	 * @return HashMap with Waiting Jobs stats
+	 */
+	public static HashMap<String, Integer> getWaitingJobs() {
+		return sobjSched.getSchedulerStats().getWaitingJobTypes();
+	}
+
+	/**
+	 * Returns List of names of running jobs.
+	 * 
+	 * @return List of Strings - running jobs names
+	 */
+	public static List<String> getRunningJobs() {
+		return sobjSched.getSchedulerStats().getRunJobs();
+	}
+
 }
-

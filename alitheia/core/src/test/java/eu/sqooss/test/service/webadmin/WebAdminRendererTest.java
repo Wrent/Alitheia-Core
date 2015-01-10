@@ -65,34 +65,25 @@ public class WebAdminRendererTest {
 		Assert.assertEquals(1,
 				(int) WebAdminRenderer.getFailedJobStats().get("Job name 2"));
 	}
-
-	// @Test
-	// public void testRenderLogsMultiple() {
-	// Whitebox.setInternalState(WebAdminRenderer.class, sobjLogManager);
-	// String[] logEntries = {"Log entry 1", "Log entry 2"};
-	// when(sobjLogManager.getRecentEntries()).thenReturn(logEntries);
-	// String multipleLogEntries = WebAdminRenderer.renderLogs();
-	// String multipleLogEntriesTruth =
-	// "					<li>Log entry 1</li>" + newline +
-	// "					<li>Log entry 2</li>" + newline;
-	//
-	// assertEquals(multipleLogEntriesTruth, multipleLogEntries);
-	// }
-	//
-	// @Test
-	// public void testRenderLogsNone() {
-	// Whitebox.setInternalState(WebAdminRenderer.class, sobjLogManager);
-	// when(sobjLogManager.getRecentEntries()).thenReturn(new String[0]);
-	// String logEntries = WebAdminRenderer.renderLogs();
-	// String logEntriesTruth =
-	// "					<li>&lt;none&gt;</li>" + newline;
-	//
-	// assertEquals(logEntries, logEntriesTruth);
-	//
-	// when(sobjLogManager.getRecentEntries()).thenReturn(null);
-	// logEntries = WebAdminRenderer.renderLogs();
-	// assertEquals(logEntriesTruth, logEntries);
-	// }
+	
+	@Test
+	public void testGetLogsNone() {
+		Whitebox.setInternalState(WebAdminRenderer.class, sobjLogManager);
+		 when(sobjLogManager.getRecentEntries()).thenReturn(new String[0]);
+		 Assert.assertTrue(WebAdminRenderer.getLogs().size() == 0);
+		
+		 when(sobjLogManager.getRecentEntries()).thenReturn(null);
+		 Assert.assertTrue(WebAdminRenderer.getLogs().size() == 0);
+	}
+	
+	@Test
+	public void testGetLogsMultiple() {
+		Whitebox.setInternalState(WebAdminRenderer.class, sobjLogManager);
+		 String[] logEntries = {"Log entry 1", "Log entry 2"};
+		 when(sobjLogManager.getRecentEntries()).thenReturn(logEntries);
+		 Assert.assertTrue(WebAdminRenderer.getLogs().size() == 2);
+		 Assert.assertEquals("Log entry 1", WebAdminRenderer.getLogs().get(0));
+	}
 
 	@Test
 	public void testGetUptime() {
@@ -124,8 +115,8 @@ public class WebAdminRendererTest {
 		Whitebox.setInternalState(WebAdminRenderer.class, sobjSched);
 
 		SchedulerStats stats = new SchedulerStats();
-		stats.addFailedJob("Job name 1");
-		stats.addFailedJob("Job name 2");
+		stats.addWaitingJob("Job name 1");
+		stats.addWaitingJob("Job name 2");
 
 		when(sobjSched.getSchedulerStats()).thenReturn(stats);
 		Assert.assertEquals(stats.getWaitingJobTypes(),
