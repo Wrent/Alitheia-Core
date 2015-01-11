@@ -1,0 +1,16 @@
+#macro( normalFieldset $name $css $content $in )
+<fieldset
+#if ($css)
+	 class="$css"
+#end
+>
+	<legend>
+	#if ($name)
+		$name
+	#else
+		NONAME
+	#end
+	</legend>
+	$content
+</fieldset>
+#end

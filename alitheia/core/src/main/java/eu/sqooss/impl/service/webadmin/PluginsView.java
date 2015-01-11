@@ -57,6 +57,14 @@ public class PluginsView extends AbstractView{
         super(bundlecontext, vc);
     }
 
+    public static boolean isPluginsListEmpty() {
+    	return sobjPA.listPlugins().isEmpty();
+    }
+    
+    public static Collection<PluginInfo> getPluginsList() {
+    	return sobjPA.listPlugins();
+    }
+    
     /**
      * Renders the various plug-in's views.
      * 
@@ -102,23 +110,7 @@ public class PluginsView extends AbstractView{
         PluginInfo selPI           = null;
 
         // Proceed only when at least one plug-in is registered
-        if (sobjPA.listPlugins().isEmpty()) {
-            b.append(normalFieldset(
-                    "All plug-ins",
-                    null,
-                    new StringBuilder("<span>"
-                            + "No plug-ins found!&nbsp;"
-                            + "<input type=\"button\""
-                            + " class=\"install\""
-                            + " style=\"width: 100px;\""
-                            + " value=\"Refresh\""
-                            + " onclick=\"javascript:"
-                            + "window.location.reload(true);"
-                            + "\">"
-                            + "</span>"),
-                    in));
-        }
-        else {
+        if (!isPluginsListEmpty()){
             // ===============================================================
             // Parse the servlet's request object
             // ===============================================================
