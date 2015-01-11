@@ -285,7 +285,7 @@ public class ProjectsView extends AbstractView {
         // ===============================================================
         // Display the accumulated error messages (if any)
         // ===============================================================
-        b.append(errorFieldset(e, ++in));
+        b.append(errorFieldset(e, ++in)); //TODO enter into thing
 
         // Get the complete list of projects stored in the SQO-OSS framework
         Set<StoredProject> projects = ClusterNode.thisNode().getProjects();
@@ -682,7 +682,7 @@ public class ProjectsView extends AbstractView {
     public static Set<Updater> getUpdaters(int selProjectId, String updaterStage) {
     	Set<Updater> updaters;
     	StoredProject selProject = sobjDB.findObjectById(StoredProject.class, selProjectId);
-    	
+    	 
     	//TODO move to separate function?
     	UpdaterStage stage;
     	if(updaterStage == "inference")
