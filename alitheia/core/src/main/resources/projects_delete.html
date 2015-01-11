@@ -21,8 +21,6 @@
       </tr>
     </table>
   </fieldset>
-  ##addHiddenFields
-  <input type="hidden" id="reqAction" name="reqAction" value=""/> ## "Action type" input field
-  <input type="hidden" id="projectId" name="projectId" value="$reqValProjectId"/> ## "Project Id" input field
-  <input type="hidden" id="reqParSyncPlugin" name="reqParSyncPlugin" value=""/> ## "Plug-in hashcode" input field
+  #parse("projects_error_fieldset.html")
+  #parse("projects_hidden_fields.html")
 </form>

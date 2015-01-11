@@ -50,10 +50,8 @@
       </td>
     </tr>
   </table>
-  ##addHiddenFields
-  <input type="hidden" id="reqAction" name="reqAction" value=""/> ## "Action type" input field
-  <input type="hidden" id="projectId" name="projectId" value="$reqValProjectId"/> ## "Project Id" input field
-  <input type="hidden" id="reqParSyncPlugin" name="reqParSyncPlugin" value=""/> ## "Plug-in hashcode" input field
+  #parse("projects_error_fieldset.html")
+  #parse("projects_hidden_fields.html")
   <h2>$tr.label("help")</h2>
   $tr.message("project_help")
 </form>
