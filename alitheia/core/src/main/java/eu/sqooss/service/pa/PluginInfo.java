@@ -604,6 +604,10 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	public int compareTo(PluginInfo pi) {
 		return hashcode.compareTo(pi.hashcode);
 	}
+	
+	public boolean isInstalled() {
+		return installed;
+	}
 }
 
 //vi: ai nosi sw=4 ts=4 expandtab

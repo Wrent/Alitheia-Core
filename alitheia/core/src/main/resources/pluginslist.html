@@ -15,4 +15,12 @@
 			$errorMessages
 		</fieldset>
 	#end
+	#set ($selectedPlugin = $metrics.getSelectedPlugin())
+	#set ($requestAction = $request.getParameter("action"))
+	#if ($selectedPlugin && $selectedPlugin.isInstalled() && $requestAction.equals("createProperty"))
+		#parse("pluginpropertiescreate.html")
+	#end
+	#if ($selectedPlugin && $selectedPlugin.installed && $requestAction.equals("updateProperty"))
+		#parse("pluginpropertiesupdate.html")
+	#end
 #end

@@ -40,6 +40,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.velocity.VelocityContext;
+import org.hibernate.Hibernate;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
@@ -54,7 +55,13 @@ import eu.sqooss.service.util.StringUtils;
 public class PluginsView extends AbstractView{
 
 	private static StringBuilder e;
-	
+	// Info object of the selected plug-in
+    private static PluginInfo selPI = null;
+	private static String reqValPropName = null;
+	private static String reqValPropDescr     = null;
+	private static String reqValPropType      = null;
+	private static String reqValPropValue     = null;
+    
     public PluginsView(BundleContext bundlecontext, VelocityContext vc) {
         super(bundlecontext, vc);
         e = new StringBuilder();
@@ -76,11 +83,40 @@ public class PluginsView extends AbstractView{
     	}
     }
     
+    public static PluginInfo getSelectedPlugin() {
+    	return selPI;
+    }
+    
+    public static String getValPropName() {
+    	return (reqValPropName != null) ? reqValPropName : "";
+    }
+    
+    public static String getValPropType() {
+    	return (reqValPropType != null) ? reqValPropType : "";
+    }
+    
+    public static String getValPropDescr() {
+    	return (reqValPropDescr != null) ? reqValPropDescr : "";
+    }
+    
+    public static String getValPropValue() {
+    	return (reqValPropValue != null) ? reqValPropValue : "";
+    }
+    
+    public static ConfigurationType[] getConfigurationTypes() {
+    	return ConfigurationType.values();
+    }
+    
     public static void exec(HttpServletRequest req) {
     	// Stores the assembled HTML content
         StringBuilder b = new StringBuilder("\n");
         // Stores the accumulated error messages
         e = new StringBuilder();
+        selPI = null;
+        reqValPropName = null;
+        reqValPropDescr     = null;
+        reqValPropType      = null;
+        reqValPropValue     = null;
         // Indentation spacer
         long in = 6;
 
@@ -104,14 +140,10 @@ public class PluginsView extends AbstractView{
         // Request values
         String reqValAction        = "";
         String reqValHashcode      = null;
-        String reqValPropName      = null;
-        String reqValPropDescr     = null;
-        String reqValPropType      = null;
-        String reqValPropValue     = null;
+        
         boolean reqValShowProp     = false;         // Show plug-in properties
         boolean reqValShowActv     = false;         // Show plug-in activators
-        // Info object of the selected plug-in
-        PluginInfo selPI           = null;
+        
 
         // Proceed only when at least one plug-in is registered
         if (!isPluginsListEmpty()){
@@ -307,6 +339,11 @@ public class PluginsView extends AbstractView{
         StringBuilder b = new StringBuilder("\n");
         // Stores the accumulated error messages
         e = new StringBuilder();
+        selPI = null;
+        reqValPropName = null;
+        reqValPropDescr     = null;
+        reqValPropType      = null;
+        reqValPropValue     = null;
         // Indentation spacer
         long in = 6;
 
@@ -330,14 +367,9 @@ public class PluginsView extends AbstractView{
         // Request values
         String reqValAction        = "";
         String reqValHashcode      = null;
-        String reqValPropName      = null;
-        String reqValPropDescr     = null;
-        String reqValPropType      = null;
-        String reqValPropValue     = null;
         boolean reqValShowProp     = false;         // Show plug-in properties
         boolean reqValShowActv     = false;         // Show plug-in activators
-        // Info object of the selected plug-in
-        PluginInfo selPI           = null;
+        
 
         // Proceed only when at least one plug-in is registered
         if (!isPluginsListEmpty()){
@@ -534,149 +566,149 @@ public class PluginsView extends AbstractView{
             // ===============================================================
             // "Create/update configuration property" editor
             // ===============================================================
-            if ((selPI != null) && (selPI.installed)
-                    && ((reqValAction.equals(actValReqAddProp))
-                            || (reqValAction.equals(actValReqUpdProp)))) {
-                // Input field values are stored here
-                String value = null;
-                // Create the field-set
-                b.append(sp(in) + "<fieldset>\n");
-                // Check for a property update request
-                boolean update = selPI.hasConfProp(
-                        reqValPropName, reqValPropType);
-                b.append(sp(++in) + "<legend>"
-                        + ((update)
-                                ? "Update property of "
-                                : "Create property for ")
-                        + selPI.getPluginName()
-                        + "</legend>\n");
-                b.append(sp(in) + "<table class=\"borderless\">");
-                // Property's name
-                value = ((reqValPropName != null) ? reqValPropName : "");
-                b.append(sp(in) + "<tr>\n"
-                        + sp(++in)
-                        + "<td class=\"borderless\" style=\"width:100px;\">"
-                        + "<b>Name</b>"
-                        + "</td>\n"
-                        + sp(in)
-                        + "<td class=\"borderless\">"
-                        + ((update) ? value
-                                : "<input type=\"text\""
-                                    + " class=\"form\""
-                                    + " id=\"" + reqParPropName + "\""
-                                    + " name=\"" + reqParPropName + "\""
-                                    + " value=\"" + value + "\">")
-                                    + "</td>\n"
-                                    + sp(--in) + "</tr>\n");
-                // Property's description
-                value = ((reqValPropDescr != null) ? reqValPropDescr : "");
-                b.append(sp(in) + "<tr>\n"
-                        + sp(++in)
-                        + "<td class=\"borderless\" style=\"width:100px;\">"
-                        + "<b>Description</b>"
-                        + "</td>\n"
-                        + sp(in)
-                        + "<td class=\"borderless\">"
-                        + ((update) ? value
-                                : "<input type=\"text\""
-                                    + " class=\"form\""
-                                    + " id=\"" + reqParPropDescr + "\""
-                                    + " name=\"" + reqParPropDescr + "\""
-                                    + " value=\"" + value + "\">")
-                                    + "</td>\n"
-                                    + sp(--in) + "</tr>\n");
-                // Property's type
-                value = ((reqValPropType != null) ? reqValPropType : "");
-                b.append(sp(in) + "<tr>\n"
-                        + sp(++in)
-                        + "<td class=\"borderless\" style=\"width:100px;\">"
-                        + "<b>Type</b>"
-                        + "</td>\n"
-                        + sp(in)
-                        + "<td class=\"borderless\">\n"
-                        + sp(++in));
-                if (update) {
-                    b.append(value);
-                }
-                else {
-                    b.append("<select class=\"form\""
-                            + " id=\"" + reqParPropType + "\""
-                            + " name=\"" + reqParPropType + "\">\n");
-                    for (ConfigurationType type : ConfigurationType.values()) {
-                        boolean selected = type.toString().equals(value);
-                        b.append(sp(in) + "<option"
-                                + " value=\"" + type.toString() + "\""
-                                + ((selected) ? " selected" : "")
-                                + ">"
-                                + type.toString()
-                                + "</option>\n");
-                    }
-                    b.append(sp(in) + "</select>\n");
-                }
-                b.append(sp(--in)
-                        + "</td>\n"
-                        + sp(--in)
-                        + "</tr>\n");
-                // Property's value
-                value = ((reqValPropValue != null) ? reqValPropValue : "");
-                b.append(sp(in) + "<tr>\n"
-                        + sp(++in)
-                        + "<td class=\"borderless\" style=\"width:100px;\">"
-                        + "<b>Value</b>"
-                        + "</td>\n"
-                        + sp(in)
-                        + "<td class=\"borderless\">"
-                        + "<input type=\"text\""
-                        + " class=\"form\""
-                        + " id=\"" + reqParPropValue + "\""
-                        + " name=\"" + reqParPropValue + "\""
-                        + " value=\"" + value +"\">"
-                        + "</td>\n"
-                        + sp(--in)
-                        + "</tr>\n");
-                // Command tool-bar
-                value = ((update) ? "Update" : "Create");
-                b.append(sp(in) + "<tr>\n"
-                        + sp(++in)
-                        + "<td colspan=\"2\" class=\"borderless\">"
-                        + "<input type=\"button\""
-                        + " class=\"install\""
-                        + " style=\"width: 100px;\""
-                        + " value=\"" + value + "\""
-                        + " onclick=\"javascript:"
-                        + "document.getElementById('"
-                        + reqParAction + "').value='"
-                        + actValConAddProp + "';"
-                        + "document.metrics.submit();\">"
-                        + "&nbsp;");
-                if (update) {
-                    b.append(sp(in) + "<input type=\"button\""
-                            + " class=\"install\""
-                            + " style=\"width: 100px;\""
-                            + " value=\"Remove\""
-                            + " onclick=\"javascript:"
-                            + "document.getElementById('"
-                            + reqParAction + "').value='"
-                            + actValConRemProp + "';"
-                            + "document.metrics.submit();\">"
-                            + "&nbsp;");
-                }
-                b.append(sp(in) + "<input type=\"button\""
-                        + " class=\"install\""
-                        + " style=\"width: 100px;\""
-                        + " value=\"Cancel\""
-                        + " onclick=\"javascript:"
-                        + "document.metrics.submit();\">"
-                        + "</td>\n"
-                        + sp(--in)
-                        + "</tr>\n");
-                b.append(sp(--in) + "</table>");
-                b.append(sp(--in) + "</fieldset>\n");
-            }
+//            if ((selPI != null) && (selPI.installed)
+//                    && ((reqValAction.equals(actValReqAddProp))
+//                            || (reqValAction.equals(actValReqUpdProp)))) {
+//                // Input field values are stored here
+//                String value = null;
+//                // Create the field-set
+//                b.append(sp(in) + "<fieldset>\n");
+//                // Check for a property update request
+//                boolean update = selPI.hasConfProp(
+//                        reqValPropName, reqValPropType);
+//                b.append(sp(++in) + "<legend>"
+//                        + ((update)
+//                                ? "Update property of "
+//                                : "Create property for ")
+//                        + selPI.getPluginName()
+//                        + "</legend>\n");
+//                b.append(sp(in) + "<table class=\"borderless\">");
+//                // Property's name
+//                value = ((reqValPropName != null) ? reqValPropName : "");
+//                b.append(sp(in) + "<tr>\n"
+//                        + sp(++in)
+//                        + "<td class=\"borderless\" style=\"width:100px;\">"
+//                        + "<b>Name</b>"
+//                        + "</td>\n"
+//                        + sp(in)
+//                        + "<td class=\"borderless\">"
+//                        + ((update) ? value
+//                                : "<input type=\"text\""
+//                                    + " class=\"form\""
+//                                    + " id=\"" + reqParPropName + "\""
+//                                    + " name=\"" + reqParPropName + "\""
+//                                    + " value=\"" + value + "\">")
+//                                    + "</td>\n"
+//                                    + sp(--in) + "</tr>\n");
+//                // Property's description
+//                value = ((reqValPropDescr != null) ? reqValPropDescr : "");
+//                b.append(sp(in) + "<tr>\n"
+//                        + sp(++in)
+//                        + "<td class=\"borderless\" style=\"width:100px;\">"
+//                        + "<b>Description</b>"
+//                        + "</td>\n"
+//                        + sp(in)
+//                        + "<td class=\"borderless\">"
+//                        + ((update) ? value
+//                                : "<input type=\"text\""
+//                                    + " class=\"form\""
+//                                    + " id=\"" + reqParPropDescr + "\""
+//                                    + " name=\"" + reqParPropDescr + "\""
+//                                    + " value=\"" + value + "\">")
+//                                    + "</td>\n"
+//                                    + sp(--in) + "</tr>\n");
+//                // Property's type
+//                value = ((reqValPropType != null) ? reqValPropType : "");
+//                b.append(sp(in) + "<tr>\n"
+//                        + sp(++in)
+//                        + "<td class=\"borderless\" style=\"width:100px;\">"
+//                        + "<b>Type</b>"
+//                        + "</td>\n"
+//                        + sp(in)
+//                        + "<td class=\"borderless\">\n"
+//                        + sp(++in));
+//                if (update) {
+//                    b.append(value);
+//                }
+//                else {
+//                    b.append("<select class=\"form\""
+//                            + " id=\"" + reqParPropType + "\""
+//                            + " name=\"" + reqParPropType + "\">\n");
+//                    for (ConfigurationType type : ConfigurationType.values()) {
+//                        boolean selected = type.toString().equals(value);
+//                        b.append(sp(in) + "<option"
+//                                + " value=\"" + type.toString() + "\""
+//                                + ((selected) ? " selected" : "")
+//                                + ">"
+//                                + type.toString()
+//                                + "</option>\n");
+//                    }
+//                    b.append(sp(in) + "</select>\n");
+//                }
+//                b.append(sp(--in)
+//                        + "</td>\n"
+//                        + sp(--in)
+//                        + "</tr>\n");
+//                // Property's value
+//                value = ((reqValPropValue != null) ? reqValPropValue : "");
+//                b.append(sp(in) + "<tr>\n"
+//                        + sp(++in)
+//                        + "<td class=\"borderless\" style=\"width:100px;\">"
+//                        + "<b>Value</b>"
+//                        + "</td>\n"
+//                        + sp(in)
+//                        + "<td class=\"borderless\">"
+//                        + "<input type=\"text\""
+//                        + " class=\"form\""
+//                        + " id=\"" + reqParPropValue + "\""
+//                        + " name=\"" + reqParPropValue + "\""
+//                        + " value=\"" + value +"\">"
+//                        + "</td>\n"
+//                        + sp(--in)
+//                        + "</tr>\n");
+//                // Command tool-bar
+//                value = ((update) ? "Update" : "Create");
+//                b.append(sp(in) + "<tr>\n"
+//                        + sp(++in)
+//                        + "<td colspan=\"2\" class=\"borderless\">"
+//                        + "<input type=\"button\""
+//                        + " class=\"install\""
+//                        + " style=\"width: 100px;\""
+//                        + " value=\"" + value + "\""
+//                        + " onclick=\"javascript:"
+//                        + "document.getElementById('"
+//                        + reqParAction + "').value='"
+//                        + actValConAddProp + "';"
+//                        + "document.metrics.submit();\">"
+//                        + "&nbsp;");
+//                if (update) {
+//                    b.append(sp(in) + "<input type=\"button\""
+//                            + " class=\"install\""
+//                            + " style=\"width: 100px;\""
+//                            + " value=\"Remove\""
+//                            + " onclick=\"javascript:"
+//                            + "document.getElementById('"
+//                            + reqParAction + "').value='"
+//                            + actValConRemProp + "';"
+//                            + "document.metrics.submit();\">"
+//                            + "&nbsp;");
+//                }
+//                b.append(sp(in) + "<input type=\"button\""
+//                        + " class=\"install\""
+//                        + " style=\"width: 100px;\""
+//                        + " value=\"Cancel\""
+//                        + " onclick=\"javascript:"
+//                        + "document.metrics.submit();\">"
+//                        + "</td>\n"
+//                        + sp(--in)
+//                        + "</tr>\n");
+//                b.append(sp(--in) + "</table>");
+//                b.append(sp(--in) + "</fieldset>\n");
+//            }
             // ===============================================================
             // Plug-in editor
             // ===============================================================
-            else if (selPI != null) {
+            if (selPI != null) {
                 // Create the plug-in field-set
                 b.append(sp(in) + "<fieldset>\n");
                 b.append(sp(++in) + "<legend>"
