@@ -87,7 +87,7 @@ public class PluginsView extends AbstractView{
     	}
     }
     
-    public static PluginInfo getSelectedPlugin() {
+    public PluginInfo getSelectedPlugin() {
     	return selPI;
     }
     
@@ -101,6 +101,10 @@ public class PluginsView extends AbstractView{
     
     public static String getValPropDescr() {
     	return (reqValPropDescr != null) ? reqValPropDescr : "";
+    }
+    
+    public static String getValPropValue() {
+    	return (reqValPropValue != null) ? reqValPropValue : "";
     }
     
     public static String getValAction() {
@@ -147,6 +151,7 @@ public class PluginsView extends AbstractView{
     		return false;
     	}
     }
+ 
     
     public static Collection<PluginInfo> getAllPlugins() {
     	return sobjPA.listPlugins();
