@@ -54,9 +54,11 @@ import eu.sqooss.service.util.StringUtils;
 
 public class PluginsView extends AbstractView{
 
+	//error messages
 	private static StringBuilder e;
 	// Info object of the selected plug-in
     private static PluginInfo selPI = null;
+    //request variables for easier access
 	private static String reqValPropName = null;
 	private static String reqValPropDescr     = null;
 	private static String reqValPropType      = null;
@@ -71,14 +73,26 @@ public class PluginsView extends AbstractView{
         e = new StringBuilder();
     }
 
+    /**
+     * Determines whether the list of available plugins is empty.
+     * @return boolean is list of available plugins empty?
+     */
     public static boolean isPluginsListEmpty() {
     	return sobjPA.listPlugins().isEmpty();
     }
     
+    /**
+     * Returns the collection of available plugins. 
+     * @return Collection available plugins
+     */
     public static Collection<PluginInfo> getPluginsList() {
     	return sobjPA.listPlugins();
     }
     
+    /**
+     * Returns the String of error messages collected during request execution.
+     * @return String Error messages.
+     */
     public static String getErrorMessages() {
     	if(e.length() > 0) {
     		return e.toString();
@@ -87,50 +101,100 @@ public class PluginsView extends AbstractView{
     	}
     }
     
+    /**
+     * Returns the currently selected plugin.
+     * @return PluginInfo Selected plugin.
+     */
     public PluginInfo getSelectedPlugin() {
     	return selPI;
     }
-    
+
+    /**
+     * Returns the request property name.
+     * @return String Request property name
+     */
     public static String getValPropName() {
     	return (reqValPropName != null) ? reqValPropName : "";
     }
     
+    /**
+     * Returns the request property type.
+     * @return String Request property type
+     */
     public static String getValPropType() {
     	return (reqValPropType != null) ? reqValPropType : "";
     }
     
+    /**
+     * Returns the request property description.
+     * @return String Request property description.
+     */
     public static String getValPropDescr() {
     	return (reqValPropDescr != null) ? reqValPropDescr : "";
     }
     
+    /**
+     * Returns the request property value.
+     * @return String Request property value
+     */
     public static String getValPropValue() {
     	return (reqValPropValue != null) ? reqValPropValue : "";
     }
     
+    /**
+     * Returns request action.
+     * @return String Request action
+     */
     public static String getValAction() {
     	return (reqValAction != null) ? reqValAction : "";
     }
     
+    /**
+     * Returns request hashcode.
+     * @return String Request hashcode
+     */
     public static String getValHashcode() {
     	return (reqValHashcode != null) ? reqValHashcode : "";
     }
     
+    /**
+     * Determines if properties of plugins should be shown.
+     * @return boolean Should properties of plugins be shown?
+     */
     public static boolean getValShowProp() {
     	return reqValShowProp;
     }
     
+    /**
+     * Determines if activities of plugins should be shown.
+     * @return boolean Should activities of plugins be shown?
+     */
     public static boolean getValShowActv() {
     	return reqValShowActv;
     }
     
+    /**
+     * Returns array of configuration types.
+     * @return ConfigurationType[] Configuration types
+     */
     public static ConfigurationType[] getConfigurationTypes() {
     	return ConfigurationType.values();
     }
     
+    /**
+     * Returns list of metrics of given plugin.
+     * @param pi plugin to show metrics of
+     * @return List<Metric> list of metrics for given plugin
+     */
     public static List<Metric> getPluginMetrics(PluginInfo pi) {
     	return sobjPA.getPlugin(pi).getAllSupportedMetrics();
     }
     
+    /**
+     * Determines if the list of plugin metrics is empty.
+     * @param pi given plugin
+     * @return boolean Is list of metrics of given plugin empty?
+     */
     public static boolean isPluginMetricsEmpty(PluginInfo pi) {
     	List<Metric> metrics = sobjPA.getPlugin(pi).getAllSupportedMetrics();
        	if ((metrics == null) || (metrics.isEmpty())) {
@@ -139,10 +203,20 @@ public class PluginsView extends AbstractView{
        	return false;
     }
     
+    /**
+     * Returns the configuration of given plugin.
+     * @param pi given plugin
+     * @return Set<PluginConfiguration> configuration of given plugin
+     */
     public static Set<PluginConfiguration> getPluginConfiguration(PluginInfo pi) {
     	return Plugin.getPluginByHashcode(pi.getHashcode()).getConfigurations();
     }
     
+    /**
+     * Determines if the list of configuration of plugin is empty.
+     * @param pi given plugin
+     * @return Is list of configuration of plugin empty?
+     */
     public static boolean isPluginConfigurationEmpty(PluginInfo pi) {
     	Set<PluginConfiguration> config = Plugin.getPluginByHashcode(pi.getHashcode()).getConfigurations();
     	if ((config == null) || (config.isEmpty())) {
@@ -152,10 +226,6 @@ public class PluginsView extends AbstractView{
     	}
     }
  
-    
-    public static Collection<PluginInfo> getAllPlugins() {
-    	return sobjPA.listPlugins();
-    }
     
     public static void exec(HttpServletRequest req) {
     	// Stores the assembled HTML content

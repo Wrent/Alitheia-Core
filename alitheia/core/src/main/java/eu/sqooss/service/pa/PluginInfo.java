@@ -449,10 +449,10 @@ public class PluginInfo implements Comparable<PluginInfo> {
     }
     
     /**
-     * Returns the metric name stored in this <code>MetricInfo</code>
+     * Returns the metric class stored in this <code>MetricInfo</code>
      * object.
      *
-     * @return Metric name.
+     * @return Metric class.
      */
     public String getPluginClass() {
     	return StringUtils.join((String[]) (this.getServiceRef().getProperty(Constants.OBJECTCLASS)),",");

@@ -10,7 +10,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		#foreach ($plugin in $metrics.getAllPlugins())
+		#foreach ($plugin in $metrics.getPluginsList())
 			#if(!$plugin.isInstalled())
 				<tr class="edit"
 				onclick="javascript:document.getElementById('pluginHashcode').value='$plugin.getHashcode()';document.metrics.submit();">
@@ -23,7 +23,7 @@
 				</tr>
 			#end
 		#end
-		#foreach ($plugin in $metrics.getAllPlugins())
+		#foreach ($plugin in $metrics.getPluginsList())
 			#if($plugin.isInstalled())
 				<tr class="edit"
 				onclick="javascript:document.getElementById('pluginHashcode').value='$plugin.getHashcode()';document.metrics.submit();">
