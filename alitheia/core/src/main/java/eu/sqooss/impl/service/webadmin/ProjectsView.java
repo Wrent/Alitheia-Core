@@ -271,46 +271,56 @@ public class ProjectsView extends AbstractView {
     
     public static String getLastProjectVersion(StoredProject project) {
     	String lastVersion = getLbl("l0051");
-        ProjectVersion v = ProjectVersion.getLastProjectVersion(project);
-        if (v != null) {
-            lastVersion = String.valueOf(v.getSequence()) + "(" + v.getRevisionId() + ")";
-        }
+    	if(project != null) {
+	        ProjectVersion v = ProjectVersion.getLastProjectVersion(project);
+	        if (v != null) {
+	            lastVersion = String.valueOf(v.getSequence()) + "(" + v.getRevisionId() + ")";
+	        }
+    	}
         return lastVersion;
     }
     
     public static String getLastEmailDate(StoredProject project) {
     	String lastDate = getLbl("l0051");
-        MailMessage mm = MailMessage.getLatestMailMessage(project);
-        if (mm != null) {
-        	lastDate = mm.getSendDate().toString();
-        }
+    	if(project != null) {
+	        MailMessage mm = MailMessage.getLatestMailMessage(project);
+	        if (mm != null) {
+	        	lastDate = mm.getSendDate().toString();
+	        }
+    	}
         return lastDate;
     }
     
     public static String getLastBug(StoredProject project) {
     	String lastBug = getLbl("l0051");
-    	Bug bug = Bug.getLastUpdate(project);
-        if (bug != null) {
-        	lastBug = bug.getBugID();
-        }
+    	if(project != null) {
+	    	Bug bug = Bug.getLastUpdate(project);
+	        if (bug != null) {
+	        	lastBug = bug.getBugID();
+	        }
+    	}
         return lastBug;
     }
     
     public static String getEvalState(StoredProject project) {
         String evalState = getLbl("project_not_evaluated");
-        if (project.isEvaluated()) {
-        	evalState = getLbl("project_is_evaluated");
-        }
+    	if(project != null) {
+	        if (project.isEvaluated()) {
+	        	evalState = getLbl("project_is_evaluated");
+	        }
+    	}
         return evalState;
     }
     
     public static String getClusternode(StoredProject project) {
-	    String nodename = null;
-	    if (project.getClusternode() != null) {
-	        nodename = project.getClusternode().getName();
-	    } else {
-	        nodename = "(local)";
-	    }
+	    String nodename = getLbl("l0051");
+    	if(project != null) {
+		    if (project.getClusternode() != null) {
+		        nodename = project.getClusternode().getName();
+		    } else {
+		        nodename = "(local)";
+		    }
+    	}
 	    return nodename;
     }
 
@@ -318,7 +328,6 @@ public class ProjectsView extends AbstractView {
     	Set<Updater> updaters;
     	StoredProject selProject = sobjDB.findObjectById(StoredProject.class, selProjectId);
     	 
-    	//TODO move to separate function?
     	UpdaterStage stage;
     	if(updaterStage == "inference")
     		stage = UpdaterStage.INFERENCE;
