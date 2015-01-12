@@ -7,7 +7,7 @@
 		</span>
 	</fieldset>
 #else
-	<form id="metrics" name="metrics" method="post"" action="/index">
+	<form id="metrics" name="metrics" method="post" action="/index">
 	#set ($errorMessages = $metrics.getErrorMessages())
 	#if ($errorMessages)
 		<fieldset>
@@ -15,4 +15,5 @@
 			$errorMessages
 		</fieldset>
 	#end
+	</form>
 #end
