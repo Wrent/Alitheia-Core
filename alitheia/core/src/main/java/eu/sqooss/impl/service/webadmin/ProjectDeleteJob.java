@@ -51,7 +51,6 @@ public class ProjectDeleteJob extends Job {
 	private StoredProject sp;
     private AlitheiaCore core;
     
-    //TODO added public in constructor for testing purposes
     public ProjectDeleteJob(AlitheiaCore core, StoredProject sp) {
         this.sp = sp;
         this.core = core;
