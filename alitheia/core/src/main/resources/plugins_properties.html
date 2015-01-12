@@ -1,5 +1,5 @@
-#if($req.getParameter("showProperties") && req.getParameter("showProperties") == "true")
-  #set($properties = $pluginInfo.getConfiguration())
+#if($request.getParameter("showProperties") && $request.getParameter("showProperties") == "true")
+  #set($properties = $plugin.getConfiguration())
   #if($properties)
     #foreach($property in $properties)
     <tr>

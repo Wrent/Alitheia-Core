@@ -1,5 +1,5 @@
-#if($req.getParameter("showActivators") && req.getParameter("showActivators") == "true")
-  #set($activators = $pluginInfo.getActivationTypes())
+#if($request.getParameter("showActivators") && $request.getParameter("showActivators") == "true")
+  #set($activators = $plugin.getActivationTypes())
   #if($activators)
     #foreach($activator in $activators)
       <tr>

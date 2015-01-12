@@ -17,11 +17,24 @@
 	#end
 	#set ($selectedPlugin = $metrics.getSelectedPlugin())
 	#set ($requestAction = $request.getParameter("action"))
-	#if ($selectedPlugin && $selectedPlugin.isInstalled() && $requestAction.equals("createProperty"))
-		#parse("pluginpropertiescreate.html")
+	#if ($selectedPlugin && $selectedPlugin.isInstalled() && ($requestAction.equals("createProperty") || $requestAction.equals("updateProperty")))
+		#if ($requestAction.equals("createProperty"))
+			#parse("pluginpropertiescreate.html")
+		#else
+			#parse("pluginpropertiesupdate.html")
+		#end
+	#elseif($selectedPlugin)
+		#parse("plugindetails.html")	
+	#else
+		#parse("pluginsall.html")
 	#end
-	#if ($selectedPlugin && $selectedPlugin.installed && $requestAction.equals("updateProperty"))
-		#parse("pluginpropertiesupdate.html")
-	#end
+	<input type="hidden" id="action" name="action" value="">
+    <input type="hidden" id="pluginHashcode" name="pluginHashcode" value="$metrics.getValHashcode()">
+    <input type="hidden" id="propertyName" name="propertyName" value="$metrics.getValPropName()">
+    <input type="hidden" id="propertyDescription" name="propertyDescription" value="$metrics.getValPropDescr()">
+    <input type="hidden" id="propertyType" name="propertyType" value="$metrics.getValPropType()">
+    <input type="hidden" id="propertyValue" name="propertyValue" value="$metrics.getValPropValue()">
+    <input type="hidden" id="showProperties" name="showProperties" value="$metrics.getValShowProp()">
+    <input type="hidden" id="showActivators" name="showActivators" value="$metrics.getValShowActv()">
 	</form>
 #end
