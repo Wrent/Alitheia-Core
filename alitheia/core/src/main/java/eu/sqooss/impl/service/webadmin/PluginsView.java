@@ -187,6 +187,8 @@ public class PluginsView extends AbstractView{
      * @return List<Metric> list of metrics for given plugin
      */
     public static List<Metric> getPluginMetrics(PluginInfo pi) {
+    	if(pi == null)
+    		return null;
     	return sobjPA.getPlugin(pi).getAllSupportedMetrics();
     }
     
@@ -196,6 +198,8 @@ public class PluginsView extends AbstractView{
      * @return boolean Is list of metrics of given plugin empty?
      */
     public static boolean isPluginMetricsEmpty(PluginInfo pi) {
+    	if(pi == null)
+    		return true;
     	List<Metric> metrics = sobjPA.getPlugin(pi).getAllSupportedMetrics();
        	if ((metrics == null) || (metrics.isEmpty())) {
        		return true;
@@ -209,6 +213,8 @@ public class PluginsView extends AbstractView{
      * @return Set<PluginConfiguration> configuration of given plugin
      */
     public static Set<PluginConfiguration> getPluginConfiguration(PluginInfo pi) {
+    	if(pi == null)
+    		return null;
     	return Plugin.getPluginByHashcode(pi.getHashcode()).getConfigurations();
     }
     
@@ -218,6 +224,8 @@ public class PluginsView extends AbstractView{
      * @return Is list of configuration of plugin empty?
      */
     public static boolean isPluginConfigurationEmpty(PluginInfo pi) {
+    	if(pi == null)
+    		return true;
     	Set<PluginConfiguration> config = Plugin.getPluginByHashcode(pi.getHashcode()).getConfigurations();
     	if ((config == null) || (config.isEmpty())) {
     		return true;
