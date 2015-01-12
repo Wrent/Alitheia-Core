@@ -32,11 +32,7 @@ public class AdminServletTest {
 	@Mock private DBService dbs;
 	
 	private AdminServlet servlet;
-
-    public static void setUp() 
-	{
-    }
-    
+  
 	
 	@Test
 	public void testConstructor() {
