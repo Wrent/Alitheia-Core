@@ -7,7 +7,7 @@
 		</span>
 	</fieldset>
 #else
-	<form id="metrics" name="metrics" method="post"" action="/index">
+	<form id="metrics" name="metrics" method="post" action="/index">
 	#set ($errorMessages = $metrics.getErrorMessages())
 	#if ($errorMessages)
 		<fieldset>
@@ -23,4 +23,5 @@
 	#if ($selectedPlugin && $selectedPlugin.installed && $requestAction.equals("updateProperty"))
 		#parse("pluginpropertiesupdate.html")
 	#end
+	</form>
 #end
