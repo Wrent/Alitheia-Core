@@ -324,9 +324,8 @@ public class ProjectsView extends AbstractView {
 	    return nodename;
     }
 
-    public static Set<Updater> getUpdaters(int selProjectId, String updaterStage) {
+    public static Set<Updater> getUpdaters(StoredProject project, String updaterStage) {
     	Set<Updater> updaters;
-    	StoredProject selProject = sobjDB.findObjectById(StoredProject.class, selProjectId);
     	 
     	UpdaterStage stage;
     	if(updaterStage == "inference")
@@ -338,8 +337,8 @@ public class ProjectsView extends AbstractView {
 		else
     		stage = UpdaterStage.DEFAULT;
 
-    	if(selProject != null)
-    		updaters = sobjUpdater.getUpdaters(selProject, stage);
+    	if(project != null)
+    		updaters = sobjUpdater.getUpdaters(project, stage);
     	else
     		updaters =  Collections.emptySet();
     	return updaters;

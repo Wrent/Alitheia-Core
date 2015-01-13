@@ -17,9 +17,12 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -57,7 +60,9 @@ import eu.sqooss.service.metricactivator.MetricActivator;
 import eu.sqooss.service.pa.PluginAdmin;
 import eu.sqooss.service.scheduler.Scheduler;
 import eu.sqooss.service.tds.TDSService;
+import eu.sqooss.service.updater.Updater;
 import eu.sqooss.service.updater.UpdaterService;
+import eu.sqooss.service.updater.UpdaterService.UpdaterStage;
 
 
 @RunWith(PowerMockRunner.class)
@@ -65,6 +70,8 @@ import eu.sqooss.service.updater.UpdaterService;
 public class ProjectsViewTest {
 	@Mock private DBService sobjDB;
 	@Mock private ClusterNodeService sobjClusterNode;
+	@Mock private StoredProject projectMock;
+	@Mock private UpdaterService sobjUpdater;
 
 	@BeforeClass
     public static void setUp() 
@@ -193,6 +200,7 @@ public class ProjectsViewTest {
 		
 		assertEquals("n/a", ProjectsView.getLastEmailDate(project));		
 	}
+	
 	@Test
 	public void testGetLastEmailDate() {
 		StoredProject project = new StoredProject();
@@ -209,23 +217,76 @@ public class ProjectsViewTest {
 		assertEquals("Thu Feb 12 15:23:10 CET 2015", ProjectsView.getLastEmailDate(project));		
 	}
 
-
 	@Test
-	public void testGetEvalState() {
+	public void testGetEvalStateNull() {
 		ProjectsView.initResources(null);
 		assertEquals("No", ProjectsView.getEvalState(null));
 	}
 
+	@Test
+	public void testGetEvalStateNo() {
+		when(projectMock.isEvaluated()).thenReturn(false);
+		ProjectsView.initResources(null);
+
+		assertEquals("No", ProjectsView.getEvalState(projectMock));	
+	}
 
 	@Test
-	public void testGetClusternode() {
+	public void testGetEvalStateYes() {
+		when(projectMock.isEvaluated()).thenReturn(true);
 		ProjectsView.initResources(null);
-		assertEquals("n/a", ProjectsView.getClusternode(null));
+
+		assertEquals("Yes", ProjectsView.getEvalState(projectMock));	
 	}
 	
 	@Test
-	public void testGetUpdaters() {
+	public void testGetClusternodeNull() {
+		ProjectsView.initResources(null);
+		assertEquals("n/a", ProjectsView.getClusternode(null));
+	}
+	@Test
+	public void testGetClusternodeLocal() {
+		ProjectsView.initResources(null);
+		when(projectMock.getClusternode()).thenReturn(null);
 		
+		assertEquals("(local)", ProjectsView.getClusternode(projectMock));
+	}
+	@Test
+	public void testGetClusternodeRemote() {
+		ProjectsView.initResources(null);
+		when(projectMock.getClusternode()).thenReturn(new ClusterNode("Mock node name"));
+		
+		assertEquals("Mock node name", ProjectsView.getClusternode(projectMock));
+	}
+
+	@Test
+	public void testGetUpdatersNull() {
+		ProjectsView.initResources(null);
+		Whitebox.setInternalState(ProjectsView.class, sobjUpdater);
+		
+		assertTrue(ProjectsView.getUpdaters(null, "default").isEmpty());
+	}
+
+	@Test
+	public void testGetUpdaters() {
+		StoredProject project = new StoredProject();
+		ProjectsView.initResources(null);
+		Whitebox.setInternalState(ProjectsView.class, sobjUpdater);
+		
+		HashSet<Updater> defaultSet = new HashSet<Updater>(Arrays.asList((Updater)null));
+		HashSet<Updater> inferencetSet = new HashSet<Updater>(Arrays.asList((Updater)null, (Updater)null));
+		HashSet<Updater> importSet = new HashSet<Updater>(Arrays.asList((Updater)null, (Updater)null, (Updater)null));
+		HashSet<Updater> parseSet = new HashSet<Updater>();
+		
+		when(sobjUpdater.getUpdaters(project, UpdaterStage.DEFAULT)).thenReturn(defaultSet);
+		when(sobjUpdater.getUpdaters(project, UpdaterStage.INFERENCE)).thenReturn(inferencetSet);
+		when(sobjUpdater.getUpdaters(project, UpdaterStage.IMPORT)).thenReturn(importSet);
+		when(sobjUpdater.getUpdaters(project, UpdaterStage.PARSE)).thenReturn(parseSet);
+
+		assertEquals(defaultSet, ProjectsView.getUpdaters(project, "default"));
+		assertEquals(inferencetSet, ProjectsView.getUpdaters(project, "inference"));
+		assertEquals(importSet, ProjectsView.getUpdaters(project, "import"));
+		assertEquals(parseSet, ProjectsView.getUpdaters(project, "parse"));
 	}
 	
 	
@@ -238,4 +299,12 @@ public class ProjectsViewTest {
     	
 		assertEquals(ProjectsView.getClusterName(), clusterNodeName);
     }
+	
+	@Test
+	public void testGetErrors() {
+		ArrayList<String> errors = new ArrayList<String>(Arrays.asList("dummy error"));
+		Whitebox.setInternalState(ProjectsView.class, errors);
+		
+		assertEquals(errors, ProjectsView.getErrors());
+	}
 }

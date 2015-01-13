@@ -91,25 +91,25 @@
             <select name=reqUpd id=reqUpd $selProjHidden>
             <optgroup label="Import Stage">  
               <option disabled='disabled'>--</option>
-        #foreach ($updater in $projects.getUpdaters($request.getParameter("projectId"), "import"))
+        #foreach ($updater in $projects.getUpdaters($selProject, "import"))
               <option value="$updater.mnem()">$updater.descr()</option>
         #end
             </optgroup>
             <optgroup label="Parse Stage">  
               <option disabled='disabled'>--</option>
-        #foreach ($updater in $projects.getUpdaters($request.getParameter("projectId"), "parse"))
+        #foreach ($updater in $projects.getUpdaters($selProject, "parse"))
               <option value="$updater.mnem()">$updater.descr()</option>
         #end
             </optgroup>
             <optgroup label="Inference Stage">  
               <option disabled='disabled'>--</option>
-        #foreach ($updater in $projects.getUpdaters($request.getParameter("projectId"), "inference"))
+        #foreach ($updater in $projects.getUpdaters($selProject, "inference"))
               <option value="$updater.mnem()">$updater.descr()</option>
         #end
             </optgroup>
             <optgroup label="Default Stage">  
               <option disabled='disabled'>--</option>
-        #foreach ($updater in $projects.getUpdaters($request.getParameter("projectId"), "default"))
+        #foreach ($updater in $projects.getUpdaters($selProject, "default"))
               <option value="$updater.mnem()">$updater.descr()</option>
         #end
             </optgroup>
