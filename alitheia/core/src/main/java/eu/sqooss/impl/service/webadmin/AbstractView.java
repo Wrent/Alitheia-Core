@@ -33,7 +33,6 @@
 
 package eu.sqooss.impl.service.webadmin;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;

@@ -1,5 +1,6 @@
 package eu.sqooss.test.service.webadmin;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -492,6 +494,22 @@ public class AbstractViewTest {
 		} catch (InvocationTargetException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testGetUptime() {
+		String uptimeTruth = "25:02:03:02";
+
+		long days = 25L * 24L * 60L * 60L * 1000L;
+		long hours = 2L * 60L * 60L * 1000L;
+		long minutes = 2L * 60L * 1000L;
+		long seconds = 62L * 1000L;
+		long dateEntry = new Date().getTime() - days - hours - minutes
+				- seconds;
+
+		Whitebox.setInternalState(AbstractView.class, dateEntry);
+		String uptime = AbstractView.getUptime();
+		assertEquals(uptimeTruth, uptime);
 	}
 
 	protected void reinitAbstractView() {
