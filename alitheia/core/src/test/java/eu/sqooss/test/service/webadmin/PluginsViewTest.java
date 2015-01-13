@@ -15,6 +15,6 @@ public class PluginsViewTest {
     }
 
 	@Test
-	public void test() {
+	public void testIsPluginListEmpty() {
 	}
 }

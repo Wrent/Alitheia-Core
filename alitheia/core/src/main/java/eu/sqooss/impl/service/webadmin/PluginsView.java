@@ -288,7 +288,7 @@ public class PluginsView extends AbstractView {
 			retrieveDisplayFlags(req);
 			retrieveSelectedConfigurationPropertyValues(req);
 			// Retrieve the selected plug-in's hash code
-			reqValHashcode = req.getParameter(PluginsConstants.REQPARHASHCODE);
+			reqValHashcode = req.getParameter(WebAdminConstants.REQ_PAR_HASHCODE);
 
 			// Plug-in based actions
 			if (reqValHashcode != null) {
@@ -305,19 +305,19 @@ public class PluginsView extends AbstractView {
 				// =======================================================
 				// Plug-in synchronize (on all projects) request
 				// =======================================================
-				if (reqValAction.equals(PluginsConstants.ACTVALSYNC)) {
+				if (reqValAction.equals(WebAdminConstants.ACT_VAL_SYNC)) {
 					compMA.syncMetrics(sobjPA.getPlugin(selPI));
 				}
 				// =======================================================
 				// Plug-in's configuration property removal
 				// =======================================================
-				else if (reqValAction.equals(PluginsConstants.ACTVALCONREMPROP)) {
+				else if (reqValAction.equals(WebAdminConstants.ACT_VAL_CON_REM_PROP)) {
 					removePluginConfigurationProperty();
 				}
 				// =======================================================
 				// Plug-in's configuration property creation/update
 				// =======================================================
-				else if (reqValAction.equals(PluginsConstants.ACTVALCONADDPROP)) {
+				else if (reqValAction.equals(WebAdminConstants.ACT_VAL_CON_ADD_PROP)) {
 					// Check for a property update
 					boolean update = selPI.hasConfProp(reqValPropName,
 							reqValPropType);
@@ -332,9 +332,9 @@ public class PluginsView extends AbstractView {
 					// Return to the create/update view upon error
 					if (e.toString().length() > 0) {
 						if (update)
-							reqValAction = PluginsConstants.ACTVALREQUPDPROP;
+							reqValAction = WebAdminConstants.ACT_VAL_REQ_UPD_PROP;
 						else
-							reqValAction = PluginsConstants.ACTVALREQADDPROP;
+							reqValAction = WebAdminConstants.ACT_VAL_REQ_ADD_PROP;
 					}
 				}
 			}
@@ -347,7 +347,7 @@ public class PluginsView extends AbstractView {
 	 * @param req
 	 */
 	private static void retrieveEditorsAction(HttpServletRequest req) {
-		reqValAction = req.getParameter(PluginsConstants.REQPARACTION);
+		reqValAction = req.getParameter(WebAdminConstants.REQ_PAR_ACTION);
 		if (reqValAction == null) {
 			reqValAction = "";
 		}
@@ -359,13 +359,13 @@ public class PluginsView extends AbstractView {
 	 * @param req
 	 */
 	private static void retrieveDisplayFlags(HttpServletRequest req) {
-		if ((req.getParameter(PluginsConstants.REQPARSHOWPROP) != null)
-				&& (req.getParameter(PluginsConstants.REQPARSHOWPROP)
+		if ((req.getParameter(WebAdminConstants.REQ_PAR_SHOW_PROP) != null)
+				&& (req.getParameter(WebAdminConstants.REQ_PAR_SHOW_PROP)
 						.equals("true"))) {
 			reqValShowProp = true;
 		}
-		if ((req.getParameter(PluginsConstants.REQPARSHOWACTV) != null)
-				&& (req.getParameter(PluginsConstants.REQPARSHOWACTV)
+		if ((req.getParameter(WebAdminConstants.REQ_PAR_SHOW_ACTV) != null)
+				&& (req.getParameter(WebAdminConstants.REQ_PAR_SHOW_ACTV)
 						.equals("true"))) {
 			reqValShowActv = true;
 		}
@@ -378,15 +378,15 @@ public class PluginsView extends AbstractView {
 	 */
 	private static void retrieveSelectedConfigurationPropertyValues(
 			HttpServletRequest req) {
-		if ((reqValAction.equals(PluginsConstants.ACTVALCONADDPROP))
-				|| (reqValAction.equals(PluginsConstants.ACTVALREQUPDPROP))
-				|| (reqValAction.equals(PluginsConstants.ACTVALCONREMPROP))) {
+		if ((reqValAction.equals(WebAdminConstants.ACT_VAL_CON_ADD_PROP))
+				|| (reqValAction.equals(WebAdminConstants.ACT_VAL_REQ_UPD_PROP))
+				|| (reqValAction.equals(WebAdminConstants.ACT_VAL_CON_REM_PROP))) {
 			// Name, description, type and value
-			reqValPropName = req.getParameter(PluginsConstants.REQPARPROPNAME);
-			reqValPropDescr = req.getParameter(PluginsConstants.REQPARPROPDESC);
-			reqValPropType = req.getParameter(PluginsConstants.REQPARPROPTYPE);
+			reqValPropName = req.getParameter(WebAdminConstants.REQ_PAR_PROP_NAME);
+			reqValPropDescr = req.getParameter(WebAdminConstants.REQ_PAR_PROP_DESC);
+			reqValPropType = req.getParameter(WebAdminConstants.REQ_PAR_PROP_TYPE);
 			reqValPropValue = req
-					.getParameter(PluginsConstants.REQPARPROPVALUE);
+					.getParameter(WebAdminConstants.REQ_PAR_PROP_VALUE);
 		}
 	}
 
@@ -394,7 +394,7 @@ public class PluginsView extends AbstractView {
 	 * Plug-in install and uninstall request
 	 */
 	private static void processPluginInstallRequests() {
-		if (reqValAction.equals(PluginsConstants.ACTVALINSTALL)) {
+		if (reqValAction.equals(WebAdminConstants.ACT_VAL_INSTALL)) {
 			if (sobjPA.installPlugin(reqValHashcode) == false) {
 				e.append("Plug-in can not be installed!"
 						+ " Check log for details.");
@@ -404,7 +404,7 @@ public class PluginsView extends AbstractView {
 				PluginInfo pInfo = sobjPA.getPluginInfo(reqValHashcode);
 				sobjPA.pluginUpdated(sobjPA.getPlugin(pInfo));
 			}
-		} else if (reqValAction.equals(PluginsConstants.ACTVALUNINSTALL)) {
+		} else if (reqValAction.equals(WebAdminConstants.ACT_VAL_UNINSTALL)) {
 			if (sobjPA.uninstallPlugin(reqValHashcode) == false) {
 				e.append("Plug-in can not be uninstalled."
 						+ " Check log for details.");
@@ -438,7 +438,7 @@ public class PluginsView extends AbstractView {
 		}
 		// Return to the update view upon error
 		if (e.toString().length() > 0) {
-			reqValAction = PluginsConstants.ACTVALREQUPDPROP;
+			reqValAction = WebAdminConstants.ACT_VAL_REQ_UPD_PROP;
 		}
 	}
 
