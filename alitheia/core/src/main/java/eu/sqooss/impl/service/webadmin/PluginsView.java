@@ -109,7 +109,7 @@ public class PluginsView extends AbstractView {
 	 * 
 	 * @return PluginInfo Selected plugin.
 	 */
-	public PluginInfo getSelectedPlugin() {
+	public static PluginInfo getSelectedPlugin() {
 		return selPI;
 	}
 
