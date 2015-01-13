@@ -52,7 +52,7 @@ import eu.sqooss.service.pa.PluginInfo;
 import eu.sqooss.service.pa.PluginInfo.ConfigurationType;
 import eu.sqooss.service.util.StringUtils;
 
-public class PluginsView extends AbstractView{
+public class PluginsView extends AbstractView {
 
 	//error messages
 	private static StringBuilder e;
@@ -252,6 +252,7 @@ public class PluginsView extends AbstractView{
         // Indentation spacer
         long in = 6;
 
+        //TODO move these to better place
         // Request parameters
         String reqParAction        = "action";
         String reqParHashcode      = "pluginHashcode";

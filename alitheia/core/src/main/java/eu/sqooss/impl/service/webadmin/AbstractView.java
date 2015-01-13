@@ -162,6 +162,9 @@ public abstract class AbstractView {
                 sobjLogger.debug("Could not get the security manager's instance.");
         }
     }
+    
+    
+    abstract public void exec(HttpServletRequest req);
 
     /**
      * Initializes the various resource bundle with the specified locale.

@@ -155,10 +155,15 @@ public class AdminServlet extends HttpServlet {
         staticContentMap.put(path, p);
     }
 
-    protected void doGet(HttpServletRequest request,
+    protected void doGet(HttpServletRequest request, 
                          HttpServletResponse response) throws ServletException,
                                                               IOException {
-        if (!db.isDBSessionActive()) {
+
+        // Add the request to the log
+        logger.debug("GET:" + request.getPathInfo());
+
+        
+    	if (!db.isDBSessionActive()) {
             db.startDBSession();
         } 
         
@@ -209,9 +214,12 @@ public class AdminServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                                IOException {
-        if (!db.isDBSessionActive()) {
+
+        logger.debug("POST:" + request.getPathInfo());
+    	
+    	if (!db.isDBSessionActive()) {
             db.startDBSession();
-        } 
+        }
         
         try {
             String query = request.getPathInfo();
@@ -230,11 +238,50 @@ public class AdminServlet extends HttpServlet {
                 else
                 	vc.put("RESULTS", aa.results());
                 sendPage(response, request, "/results.html");
+            } else if (query.startsWith("/stop")) {
+            } else if (query.startsWith("/restart")) {
             } else {
                 doGet(request,response);
             }
         } catch (NullPointerException e) {
             logger.warn("Got a NPE while handling POST data.");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } finally {
+            if (db.isDBSessionActive()) {
+                db.commitDBSession();
+            }
+        }
+    }
+    
+
+    
+    private void handleRequest(HttpServletRequest request, 
+        						HttpServletResponse response) throws ServletException,
+        																IOException {
+    	if (!db.isDBSessionActive()) {
+            db.startDBSession();
+        }
+        String query = request.getPathInfo();
+    	
+    	try {
+
+            if (query.startsWith("/addproject")) {
+                sendPage(response, request, "/results.html");
+            } else if (query.startsWith("/diraddproject")) {
+                AdminService as = AlitheiaCore.getInstance().getAdminService();
+                AdminAction aa = as.create(AddProject.MNEMONIC);
+                aa.addArg("dir", request.getParameter("properties"));
+                as.execute(aa);
+                if (aa.hasErrors())
+                	vc.put("RESULTS", aa.errors());
+                else
+                	vc.put("RESULTS", aa.results());
+                sendPage(response, request, "/results.html");
+            } else {
+                doGet(request,response);
+            }
+        } catch (NullPointerException e) {
+            logger.warn("Got a NPE while handling request data.");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             if (db.isDBSessionActive()) {

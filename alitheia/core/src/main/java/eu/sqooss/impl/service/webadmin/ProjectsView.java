@@ -150,7 +150,6 @@ public class ProjectsView extends AbstractView {
         		syncPlugin(selProject, reqValSyncPlugin);
             }
         }
-        
     }
 
     private static StoredProject addProject(HttpServletRequest r) {
