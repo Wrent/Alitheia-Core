@@ -5,7 +5,7 @@
 			<td>Num Jobs waiting</td>
 		</tr>
 	</thead>
-	#set ($jobWaiting = $admin.getWaitingJobs())
+	#set ($jobWaiting = $jobs.getWaitingJobs())
 	<tbody>
 	#if ($jobWaiting.size() == 0)
 		<tr>

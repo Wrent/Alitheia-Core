@@ -1,4 +1,4 @@
-/*RVALA
+/*
  * This file is part of the Alitheia system, developed by the SQO-OSS
  * consortium as part of the IST FP6 SQO-OSS project, number 033331.
  *
@@ -40,25 +40,21 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.velocity.VelocityContext;
-import org.hibernate.Hibernate;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 
-import eu.sqooss.service.db.DAObject;
 import eu.sqooss.service.db.Metric;
 import eu.sqooss.service.db.Plugin;
 import eu.sqooss.service.db.PluginConfiguration;
 import eu.sqooss.service.pa.PluginInfo;
 import eu.sqooss.service.pa.PluginInfo.ConfigurationType;
-import eu.sqooss.service.util.StringUtils;
 
 public class PluginsView extends AbstractView {
 
-	// error messages
+	//error messages
 	private static StringBuilder e;
 	// Info object of the selected plug-in
-	private static PluginInfo selPI = null;
-	// request variables for easier access
+    private static PluginInfo selPI = null;
+    //request variables for easier access
 	private static String reqValPropName = null;
 	private static String reqValPropDescr = null;
 	private static String reqValPropType = null;
@@ -268,7 +264,7 @@ public class PluginsView extends AbstractView {
 	 * Retrieves data from the request required for rendering and executes the request.
 	 * @param req
 	 */
-	public static void exec(HttpServletRequest req) {
+	public void exec(HttpServletRequest req) {
 		// reinitialize all request variables
 		e = new StringBuilder();
 		selPI = null;
@@ -477,7 +473,7 @@ public class PluginsView extends AbstractView {
 		} catch (Exception ex) {
 			e.append(ex.getMessage());
 		}
-	}
+	}	
 }
 
-// vi: ai nosi sw=4 ts=4 expandtab
+//vi: ai nosi sw=4 ts=4 expandtab

@@ -28,9 +28,11 @@ import org.osgi.framework.BundleContext;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import eu.sqooss.core.AlitheiaCore;
 import eu.sqooss.impl.service.webadmin.AbstractView;
+import eu.sqooss.impl.service.webadmin.PluginsView;
 import eu.sqooss.service.cluster.ClusterNodeService;
 import eu.sqooss.service.db.DBService;
 import eu.sqooss.service.logging.LogManager;
@@ -478,6 +480,7 @@ public class AbstractViewTest {
 	public void testCheckTDSUrl() {
 		Method method = getMethod("checkTDSUrl", String.class);
 		TDSService tds = mock(TDSService.class);
+		Whitebox.setInternalState(PluginsView.class, tds);
 		when(tds.isURLSupported(anyString())).thenReturn(true);
 		try {
 			Assert.assertTrue((boolean)method.invoke(aw, "url"));
@@ -493,6 +496,12 @@ public class AbstractViewTest {
 
 	protected void reinitAbstractView() {
 		aw = new AbstractView(bc, vc) {
+
+			@Override
+			public void exec(HttpServletRequest req) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 
