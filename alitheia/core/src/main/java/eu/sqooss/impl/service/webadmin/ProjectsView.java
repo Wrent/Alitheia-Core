@@ -63,27 +63,7 @@ import eu.sqooss.service.updater.UpdaterService.UpdaterStage;
 
 public class ProjectsView extends AbstractView {
 
-    // Action parameter's values
-    private static String ACT_REQ_ADD_PROJECT   = "reqAddProject";
-    private static String ACT_CON_ADD_PROJECT   = "conAddProject";
-    private static String ACT_REQ_REM_PROJECT   = "reqRemProject";
-    private static String ACT_CON_REM_PROJECT   = "conRemProject";
-    private static String ACT_REQ_SHOW_PROJECT  = "conShowProject";
-    private static String ACT_CON_UPD_ALL       = "conUpdateAll";
-    private static String ACT_CON_UPD           = "conUpdate";
-    private static String ACT_CON_UPD_ALL_NODE  = "conUpdateAllOnNode";
-
-    // Servlet parameters
-    private static String REQ_PAR_ACTION        = "reqAction";
-    private static String REQ_PAR_PROJECT_ID    = "projectId";
-    private static String REQ_PAR_PRJ_NAME      = "projectName";
-    private static String REQ_PAR_PRJ_WEB       = "projectHomepage";
-    private static String REQ_PAR_PRJ_CONT      = "projectContact";
-    private static String REQ_PAR_PRJ_BUG       = "projectBL";
-    private static String REQ_PAR_PRJ_MAIL      = "projectML";
-    private static String REQ_PAR_PRJ_CODE      = "projectSCM";
-    private static String REQ_PAR_SYNC_PLUGIN   = "reqParSyncPlugin";
-    private static String REQ_PAR_UPD           = "reqUpd";
+   
     
     private static ArrayList<String> errors = new ArrayList<String>();
     
@@ -150,11 +130,11 @@ public class ProjectsView extends AbstractView {
     	
         AdminService as = AlitheiaCore.getInstance().getAdminService();
     	AdminAction aa = as.create(AddProject.MNEMONIC);
-    	aa.addArg("scm", r.getParameter(REQ_PAR_PRJ_CODE));
-    	aa.addArg("name", r.getParameter(REQ_PAR_PRJ_NAME));
-    	aa.addArg("bts", r.getParameter(REQ_PAR_PRJ_BUG));
-    	aa.addArg("mail", r.getParameter(REQ_PAR_PRJ_MAIL));
-    	aa.addArg("web", r.getParameter(REQ_PAR_PRJ_WEB));
+    	aa.addArg("scm", r.getParameter(WebAdminConstants.REQ_PAR_PRJ_CODE));
+    	aa.addArg("name", r.getParameter(WebAdminConstants.REQ_PAR_PRJ_NAME));
+    	aa.addArg("bts", r.getParameter(WebAdminConstants.REQ_PAR_PRJ_BUG));
+    	aa.addArg("mail", r.getParameter(WebAdminConstants.REQ_PAR_PRJ_MAIL));
+    	aa.addArg("web", r.getParameter(WebAdminConstants.REQ_PAR_PRJ_WEB));
     	as.execute(aa);
     	
     	if (aa.hasErrors()) {
@@ -162,7 +142,7 @@ public class ProjectsView extends AbstractView {
             return null;
     	} else { 
             vc.put("RESULTS", aa.results());
-            return StoredProject.getProjectByName(r.getParameter(REQ_PAR_PRJ_NAME));
+            return StoredProject.getProjectByName(r.getParameter(WebAdminConstants.REQ_PAR_PRJ_NAME));
     	}		
     }
     
