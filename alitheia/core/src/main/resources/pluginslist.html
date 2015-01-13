@@ -1,3 +1,6 @@
+#if($metrics.isDebugOn())
+	$metrics.debugRequest($request)
+#end
 #if($metrics.isPluginsListEmpty())
 	<fieldset>
 	   <legend>All plug-ins</legend>
