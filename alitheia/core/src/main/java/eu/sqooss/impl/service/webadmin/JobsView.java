@@ -9,6 +9,7 @@ import org.apache.velocity.VelocityContext;
 import org.osgi.framework.BundleContext;
 
 import eu.sqooss.service.scheduler.Job;
+import eu.sqooss.service.scheduler.SchedulerStats;
 
 public class JobsView extends AbstractView {
 
@@ -37,20 +38,6 @@ public class JobsView extends AbstractView {
 	public static Job[] getFailedJobs() {
 		return sobjSched.getFailedQueue();
 	}
-
-	/**
-	 * Determines whether there is no failed job.
-	 * 
-	 * @return boolean Is there no failed job?
-	 */
-	public static boolean isFailedJobsEmpty() {
-		Job[] jobs = sobjSched.getFailedQueue();
-		if ((jobs != null) && (jobs.length > 0)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 	
 	/**
 	 * Returns the statistics about Waiting Jobs.
@@ -69,5 +56,8 @@ public class JobsView extends AbstractView {
 	public static List<String> getRunningJobs() {
 		return sobjSched.getSchedulerStats().getRunJobs();
 	}
-
+	
+	public static SchedulerStats getSchedulerStats() {
+		return sobjSched.getSchedulerStats();
+	}
 }

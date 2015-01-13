@@ -34,6 +34,7 @@
 package eu.sqooss.impl.service.webadmin;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -96,6 +97,12 @@ public abstract class AbstractView {
     
     // Some constants that are used internally
     private static String NULL_PARAM_NAME = "Undefined parameter name!";
+    
+	/**
+	 * Represents the system time at which the WebAdminRender (and thus the
+	 * system) was started. This is required for the system uptime display.
+	 */
+	private static long startTime = new Date().getTime();
 
     /**
      * Instantiates a new <code>AbstractView</code> object.
@@ -176,6 +183,27 @@ public abstract class AbstractView {
         resErr = getErrorsBundle(locale);
         resMsg = getMessagesBundle(locale);
     }
+
+	/**
+	 * Returns a string representing the uptime of the Alitheia core in
+	 * dd:hh:mm:ss format
+	 */
+	public static String getUptime() {
+		long remainder;
+		long currentTime = new Date().getTime();
+		long timeRunning = currentTime - startTime;
+
+		// Get the elapsed time in days, hours, mins, secs
+		int days = new Long(timeRunning / 86400000).intValue();
+		remainder = timeRunning % 86400000;
+		int hours = new Long(remainder / 3600000).intValue();
+		remainder = remainder % 3600000;
+		int mins = new Long(remainder / 60000).intValue();
+		remainder = remainder % 60000;
+		int secs = new Long(remainder / 1000).intValue();
+
+		return String.format("%d:%02d:%02d:%02d", days, hours, mins, secs);
+	}
 
     /**
      * Retrieves the value of the given resource property from the

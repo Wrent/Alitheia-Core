@@ -5,11 +5,11 @@
 	<div id="contents">
    		<h2>Alitheia Logs</h2>
         <ul class="logs">
-#set ($logs = $admin.getLogs())
-#if ($logs.size() == 0)
+#set ($logList = $logs.getLogs())
+#if ($logList.size() == 0)
 			<li>&lt;none&gt;</li>
 #else
-	#foreach ($log in $logs)
+	#foreach ($log in $logList)
 			<li> $log </li>
 	#end
 #end

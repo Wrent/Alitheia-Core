@@ -15,8 +15,8 @@
 					</tr>
 				</thead>
 				<tbody>
-			    #set ($failedJobs = $admin.getFailedJobs())
-			    #if (!$admin.isFailedJobsEmpty())
+			    #set ($failedJobs = $jobs.getFailedJobs())
+			    #if ($failedJobs)
 					#foreach ($job in $failedJobs)
 						#if ($job)
 							<tr>

@@ -1,4 +1,4 @@
-#set ($runningJobs = $admin.getRunningJobs())
+#set ($runningJobs = $jobs.getRunningJobs())
 #if ($runningJobs.size() == 0)
 	No running jobs
 #else

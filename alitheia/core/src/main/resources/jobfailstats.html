@@ -5,7 +5,7 @@
 			<td>Num Jobs Failed</td>
 		</tr>
 	</thead>
-	#set ($jobFailures = $admin.getFailedJobStats())
+	#set ($jobFailures = $jobs.getFailedJobStats())
 	<tbody>
 	#if ($jobFailures.size() == 0)
 		<tr>

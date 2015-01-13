@@ -97,7 +97,7 @@ public class ProjectsView extends AbstractView {
         super(bundlecontext, vc);
     }
     
-    public static void exec(HttpServletRequest req) {
+    public void exec(HttpServletRequest req) {
 
         // Initialize the resource bundles with the request's locale
         initResources(req.getLocale());
@@ -112,43 +112,37 @@ public class ProjectsView extends AbstractView {
         //Delete old errors
     	errors.clear();
 
-        // ===============================================================
-        // Handle the servlet's request object
-        // ===============================================================
-        if (req != null) {
-            // DEBUG: Dump the servlet's request parameter
-            if (DEBUG) {
-                //b.append(debugRequest(req));
-            	//TODO find alternative
-            }
+        if (DEBUG) {
+            //b.append(debugRequest(req));
+        	//TODO find alternative
+        }
 
-            // Retrieve the selected editor's action (if any)
-            reqValAction = req.getParameter(REQ_PAR_ACTION);
-            
-            // Retrieve the selected project's DAO (if any)
-            reqValProjectId = fromString(req.getParameter(REQ_PAR_PROJECT_ID));
-            if (reqValProjectId != null) {
-                selProject = sobjDB.findObjectById(
-                        StoredProject.class, reqValProjectId);
-            }
-            
-            if (reqValAction == null) {
-                reqValAction = "";
-            } else if (reqValAction.equals(ACT_CON_ADD_PROJECT)) {
-            	selProject = addProject(req);
-            } else if (reqValAction.equals(ACT_CON_REM_PROJECT)) {
-            	selProject = removeProject(selProject);
-            } else if (reqValAction.equals(ACT_CON_UPD)) {
-            	triggerUpdate(selProject, req.getParameter(REQ_PAR_UPD));
-            } else if (reqValAction.equals(ACT_CON_UPD_ALL)) {
-            	triggerAllUpdate(selProject);
-            } else if (reqValAction.equals(ACT_CON_UPD_ALL_NODE)) {
-            	triggerAllUpdateNode(selProject);
-            } else {
-            	// Retrieve the selected plug-in's hash-code
-        		String reqValSyncPlugin = req.getParameter(REQ_PAR_SYNC_PLUGIN);
-        		syncPlugin(selProject, reqValSyncPlugin);
-            }
+        // Retrieve the selected editor's action (if any)
+        reqValAction = req.getParameter(REQ_PAR_ACTION);
+        
+        // Retrieve the selected project's DAO (if any)
+        reqValProjectId = fromString(req.getParameter(REQ_PAR_PROJECT_ID));
+        if (reqValProjectId != null) {
+            selProject = sobjDB.findObjectById(
+                    StoredProject.class, reqValProjectId);
+        }
+        
+        if (reqValAction == null) {
+            reqValAction = "";
+        } else if (reqValAction.equals(ACT_CON_ADD_PROJECT)) {
+        	selProject = addProject(req);
+        } else if (reqValAction.equals(ACT_CON_REM_PROJECT)) {
+        	selProject = removeProject(selProject);
+        } else if (reqValAction.equals(ACT_CON_UPD)) {
+        	triggerUpdate(selProject, req.getParameter(REQ_PAR_UPD));
+        } else if (reqValAction.equals(ACT_CON_UPD_ALL)) {
+        	triggerAllUpdate(selProject);
+        } else if (reqValAction.equals(ACT_CON_UPD_ALL_NODE)) {
+        	triggerAllUpdateNode(selProject);
+        } else {
+        	// Retrieve the selected plug-in's hash-code
+    		String reqValSyncPlugin = req.getParameter(REQ_PAR_SYNC_PLUGIN);
+    		syncPlugin(selProject, reqValSyncPlugin);
         }
     }
 

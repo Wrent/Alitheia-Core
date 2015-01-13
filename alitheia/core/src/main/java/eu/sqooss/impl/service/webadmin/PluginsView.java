@@ -235,7 +235,7 @@ public class PluginsView extends AbstractView {
     }
  
     
-    public static void exec(HttpServletRequest req) {
+    public void exec(HttpServletRequest req) {
     	// Stores the assembled HTML content
         StringBuilder b = new StringBuilder("\n");
         // Stores the accumulated error messages
