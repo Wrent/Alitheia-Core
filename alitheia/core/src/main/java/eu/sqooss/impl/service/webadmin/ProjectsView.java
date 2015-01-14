@@ -60,6 +60,7 @@ import eu.sqooss.service.pa.PluginInfo;
 import eu.sqooss.service.scheduler.SchedulerException;
 import eu.sqooss.service.updater.Updater;
 import eu.sqooss.service.updater.UpdaterService.UpdaterStage;
+import eu.sqooss.service.util.StringUtils;
 
 public class ProjectsView extends AbstractView {
     
@@ -188,9 +189,11 @@ public class ProjectsView extends AbstractView {
         }
 	}
 
-	// ---------------------------------------------------------------
-	// Trigger update on all resources for that project
-	// ---------------------------------------------------------------
+	/**
+	 * Trigger update on all resources for that project
+	 * 
+	 * @param selProject the project to trigger the update on
+	 */
 	private static void triggerAllUpdate(StoredProject selProject) {
 	    AdminService as = AlitheiaCore.getInstance().getAdminService();
         AdminAction aa = as.create(UpdateProject.MNEMONIC);
@@ -204,9 +207,11 @@ public class ProjectsView extends AbstractView {
         }
 	}
 	
-	// ---------------------------------------------------------------
-	// Trigger update on all resources on all projects of a node
-	// ---------------------------------------------------------------
+	/**
+	 * Trigger update on all resources on all projects of a node
+	 * 
+	 * @param selProject the project to trigger the update on
+	 */
     private static void triggerAllUpdateNode(StoredProject selProject) {
 		Set<StoredProject> projectList = ClusterNode.thisNode().getProjects();
 		
@@ -215,9 +220,12 @@ public class ProjectsView extends AbstractView {
 		}
 	}
 	
-	// ---------------------------------------------------------------
-	// Trigger synchronize on the selected plug-in for that project
-	// ---------------------------------------------------------------
+    /**
+     * Trigger synchronize on the selected plug-in for that project
+     * 
+     * @param selProject the selected project
+     * @param reqValSyncPlugin the plugin to trigger the update on
+     */
     private static void syncPlugin(StoredProject selProject, String reqValSyncPlugin) {
 		if ((reqValSyncPlugin != null) && (selProject != null)) {
 			PluginInfo pInfo = sobjPA.getPluginInfo(reqValSyncPlugin);
@@ -232,6 +240,12 @@ public class ProjectsView extends AbstractView {
 		}
     }
 
+    /**
+     * Returns a project based on its ID
+     * 
+     * @param id identifier of the project (Long)
+     * @return a StoredProject
+     */
 	public static StoredProject getProjectById(Long id){
 		StoredProject project = null;
 		if(id != null)
@@ -239,15 +253,35 @@ public class ProjectsView extends AbstractView {
 
 		return project;
 	}
-    
+	
+    /**
+     * Retrieves the errors encountered during the processing of the request
+     * 
+     * @return list with errors
+     */
     public static List<String> getErrors() {
-    	return ProjectsView.errors;
+    	ArrayList<String> htmlErrors = new ArrayList<String>();
+    	for (String error : errors)
+    		htmlErrors.add(StringUtils.makeXHTMLSafe(error));
+    			
+    	return htmlErrors;
     }
     
+    /**
+     * Retrieves all the projects on the local node
+     * 
+     * @return set with projects
+     */
     public static Set<StoredProject> getProjects() {
     	return ClusterNode.thisNode().getProjects();
     }
     
+    /**
+     * Retrieves the latest project version of a project
+     * 
+     * @param project
+     * @return String representation of the latest version
+     */
     public static String getLastProjectVersion(StoredProject project) {
     	String lastVersion = getLbl("l0051");
     	if(project != null) {
@@ -259,6 +293,12 @@ public class ProjectsView extends AbstractView {
         return lastVersion;
     }
     
+    /**
+     * Retrieves the latest email date of a project
+     * 
+     * @param project
+     * @return String representation of the latest date an email was sent
+     */
     public static String getLastEmailDate(StoredProject project) {
     	String lastDate = getLbl("l0051");
     	if(project != null) {
@@ -270,6 +310,12 @@ public class ProjectsView extends AbstractView {
         return lastDate;
     }
     
+    /**
+     * Retrieves the last bug of a project
+     * 
+     * @param project
+     * @return String representation of the ID of the last bug filed for the project
+     */
     public static String getLastBug(StoredProject project) {
     	String lastBug = getLbl("l0051");
     	if(project != null) {
@@ -281,6 +327,12 @@ public class ProjectsView extends AbstractView {
         return lastBug;
     }
     
+    /**
+     * Retrieves the current state of evaluation of a project
+     * 
+     * @param project
+     * @return String representation of the project evaluation state
+     */
     public static String getEvalState(StoredProject project) {
         String evalState = getLbl("project_not_evaluated");
     	if(project != null) {
@@ -291,6 +343,12 @@ public class ProjectsView extends AbstractView {
         return evalState;
     }
     
+    /**
+     * Retrieves the node on which a project runs
+     * 
+     * @param project
+     * @return name of the cluster node (String)
+     */
     public static String getClusternode(StoredProject project) {
 	    String nodename = getLbl("l0051");
     	if(project != null) {
@@ -303,6 +361,13 @@ public class ProjectsView extends AbstractView {
 	    return nodename;
     }
 
+    /**
+     * Retrieves the updaters of a specific project
+     * 
+     * @param project
+     * @param updaterStage desired state of the updater 
+     * @return a set with all updaters of a specific project in a specific state
+     */
     public static Set<Updater> getUpdaters(StoredProject project, String updaterStage) {
     	Set<Updater> updaters;
     	 
@@ -323,6 +388,11 @@ public class ProjectsView extends AbstractView {
     	return updaters;
     }
     
+    /**
+     * Retrieves the name of this cluster
+     * 
+     * @return String with the name
+     */
     public static String getClusterName() {
     	return sobjClusterNode.getClusterNodeName();
     }
