@@ -90,11 +90,6 @@ public class ProjectsView extends AbstractView {
         //Delete old errors
     	errors.clear();
 
-        if (DEBUG) {
-            //b.append(debugRequest(req));
-        	//TODO find alternative
-        }
-
         // Retrieve the selected editor's action (if any)
         reqValAction = req.getParameter(WebAdminConstants.REQ_PAR_ACTION);
         
@@ -124,6 +119,12 @@ public class ProjectsView extends AbstractView {
         }
     }
 
+    /**
+     * Creates a new stored project based on the request parameters
+     * 
+     * @param r Request sent to the server
+     * @return the newly created stored project
+     */
     private static StoredProject addProject(HttpServletRequest r) {
     	
         AdminService as = AlitheiaCore.getInstance().getAdminService();
@@ -144,9 +145,12 @@ public class ProjectsView extends AbstractView {
     	}		
     }
     
-    // ---------------------------------------------------------------
-    // Remove project
-    // ---------------------------------------------------------------
+    /**
+     * Queues a job in the scheduler for deleting a project
+     * 
+     * @param selProject the project to be deleted
+     * @return the project that is to be deleted
+     */
     private static StoredProject removeProject(StoredProject selProject) {
     	if (selProject != null) {
 			// Deleting large projects in the foreground is very slow
@@ -163,9 +167,13 @@ public class ProjectsView extends AbstractView {
     	return selProject;
     }
 
-	// ---------------------------------------------------------------
-	// Trigger an update
-	// ---------------------------------------------------------------
+
+    /**
+     * Triggers an update on a project
+     * 
+     * @param selProject the project which to update
+     * @param mnem string determining the update to perform
+     */
 	private static void triggerUpdate(StoredProject selProject, String mnem) {
 		AdminService as = AlitheiaCore.getInstance().getAdminService();
 		AdminAction aa = as.create(UpdateProject.MNEMONIC);

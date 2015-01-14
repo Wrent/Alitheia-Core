@@ -1,12 +1,18 @@
 package eu.sqooss.test.service.webadmin;
 
 import static org.mockito.Mockito.when;
+
+import javax.servlet.http.HttpServletRequest;
+
 import junit.framework.Assert;
 
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.osgi.framework.BundleContext;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
@@ -18,11 +24,22 @@ public class LogsViewTest {
 
 	@Mock
 	LogManager sobjLogManager;
+	@Mock 
+	BundleContext bc;
+	@Mock
+	HttpServletRequest req;
 
 	String newline = "\n";
 
 	@BeforeClass
 	public static void setUp() {
+	}
+	
+	@Test
+	public void testExec() {
+		LogsView lv = new LogsView(bc, new VelocityContext());
+		Assert.assertNotNull(lv);
+		lv.exec(req);
 	}
 	
 	@Test
