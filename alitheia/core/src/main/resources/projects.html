@@ -1,6 +1,5 @@
 #set($section=3)
-#set($reqValProjectId = $request.getParameter("projectId"))
-#set($selProject = $projects.getProjectById($request.getParameter("projectId")))
+#set($selProject = $projects.getSelProject())
 
 #parse("header.inc")
       <div id="main">

@@ -30,25 +30,23 @@ import eu.sqooss.service.db.StoredProjectConfig;
 import eu.sqooss.service.pa.PluginAdmin;
 import eu.sqooss.service.pa.PluginInfo;
 
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(StoredProjectConfig.class)
 public class ProjectDeleteJobTest {
 
-	@Mock private StoredProject project;// = new StoredProject("Mock stored project name");
+	@Mock private StoredProject project;
 	@Mock private AlitheiaCore core;
 	@Mock private DBService db;
 	@Mock private ProjectVersion v1;
 	@Mock private ProjectVersion v2;
 	@Mock private PluginAdmin pa;
 	@Mock private AlitheiaPlugin ap;
-	private ProjectDeleteJob job = new ProjectDeleteJob(core, project);
 	
-	String newline = "\n";
+	private ProjectDeleteJob job = new ProjectDeleteJob(core, project);
 
 	@BeforeClass
     public static void setUp() 
 	{
-		mockStatic(StoredProjectConfig.class);
     }
 
 	@Test
@@ -67,7 +65,6 @@ public class ProjectDeleteJobTest {
 	}
 
 	@Test
-	@PrepareForTest(StoredProjectConfig.class)
 	public void testRun()
 	{	
 		job = new ProjectDeleteJob(core, project);
@@ -76,13 +73,17 @@ public class ProjectDeleteJobTest {
 		when(db.attachObjectToDBSession(any(StoredProject.class))).thenReturn(project);
 		when(project.getProjectVersions()).thenReturn(Arrays.asList(new ProjectVersion[] {v1, v2}));
 		
-		Plugin[] entities = new Plugin[] {}; //{new Plugin(), new Plugin()};
-		doReturn(Arrays.asList(entities)).when(db).doHQL(any(String.class));
+		//Mock code for simulating plugin cleanup
+		Plugin[] entities = new Plugin[] {new Plugin(), new Plugin()};
+		entities[0].setHashcode("hash code of plugin 1");
+		doReturn(Arrays.asList(entities)).when(db).doHQL("from Plugin");
+		when(core.getPluginAdmin()).thenReturn(pa);
+		when(pa.getPluginInfo(entities[0].getHashcode())).thenReturn(new PluginInfo());
+		when(pa.getPluginInfo(entities[1].getHashcode())).thenReturn(null);
+		when(pa.getPlugin(any(PluginInfo.class))).thenReturn(ap);
+		when(pa.getPlugin(null)).thenReturn(null);
 
-//		when(core.getPluginAdmin()).thenReturn(pa);
-//		when(pa.getPluginInfo(entities[0].getHashcode())).thenReturn(new PluginInfo());
-//		when(pa.getPlugin(any(PluginInfo.class))).thenReturn(ap);
-		
+		mockStatic(StoredProjectConfig.class);
 		when(StoredProjectConfig.fromProject(any(StoredProject.class)))
 			.thenReturn(Arrays.asList(new StoredProjectConfig[] {}));
 		
@@ -91,6 +92,8 @@ public class ProjectDeleteJobTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		//verify that plugins were cleaned up
+		verify(ap, times(1)).cleanup(project);
 		
 		//Verify that db is called correctly
 		verify(db, times(1)).isDBSessionActive();
