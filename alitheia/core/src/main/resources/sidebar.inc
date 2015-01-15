@@ -24,7 +24,7 @@
         <fieldset id="jobs">
           <legend>$tr.label("job_info")</legend>
           <iframe style="width: 100%;" frameborder="0" scrolling="no" src="/jobstat">
-			#parse("jobstat.inc")
+			#parse("job_stat.inc")
           </iframe>
         </fieldset>
         <fieldset id="options">

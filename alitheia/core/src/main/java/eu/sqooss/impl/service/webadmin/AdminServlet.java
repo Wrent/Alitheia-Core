@@ -116,12 +116,12 @@ public class AdminServlet extends HttpServlet {
         Pair<String, AbstractView> pluginsPair =  new Pair<String, AbstractView>("index.html", new PluginsView(bc, vc));
         ProjectsView projectsView = new ProjectsView(bc, vc);
         Pair<String, AbstractView> projectsPair =  new Pair<String, AbstractView>("projects.html", projectsView);
-        Pair<String, AbstractView> projectsListPair =  new Pair<String, AbstractView>("projectslist.html", projectsView);
+        Pair<String, AbstractView> projectsListPair =  new Pair<String, AbstractView>("projects_list.html", projectsView);
         Pair<String, AbstractView> logsPair =  new Pair<String, AbstractView>("logs.html", new LogsView(bc, vc));
         JobsView jobsView = new JobsView(bc, vc);
         Pair<String, AbstractView> jobsPair =  new Pair<String, AbstractView>("jobs.html", jobsView);
-        Pair<String, AbstractView> allJobsPair =  new Pair<String, AbstractView>("alljobs.html", jobsView);
-        Pair<String, AbstractView> jobStatPair =  new Pair<String, AbstractView>("jobstat.html", jobsView);
+        Pair<String, AbstractView> allJobsPair =  new Pair<String, AbstractView>("jobs_all.html", jobsView);
+        Pair<String, AbstractView> jobStatPair =  new Pair<String, AbstractView>("job_stat.html", jobsView);
         Pair<String, AbstractView> rulesPair =  new Pair<String, AbstractView>("rules.html", new RulesView(bc, vc));
         Pair<String, AbstractView> resultsPair =  new Pair<String, AbstractView>("results.html", new ResultsView(bc, vc));
         

@@ -22,14 +22,14 @@
 	#set ($requestAction = $request.getParameter("action"))
 	#if ($selectedPlugin && $selectedPlugin.isInstalled() && ($requestAction.equals("createProperty") || $requestAction.equals("updateProperty")))
 		#if ($requestAction.equals("createProperty"))
-			#parse("pluginpropertiescreate.html")
+			#parse("plugin_properties_create.html")
 		#else
-			#parse("pluginpropertiesupdate.html")
+			#parse("plugin_properties_update.html")
 		#end
 	#elseif($selectedPlugin)
-		#parse("plugindetails.html")	
+		#parse("plugin_details.html")	
 	#else
-		#parse("pluginsall.html")
+		#parse("plugins_all.html")
 	#end
 	<input type="hidden" id="action" name="action" value="">
     <input type="hidden" id="pluginHashcode" name="pluginHashcode" value="$metrics.getValHashcode()">
