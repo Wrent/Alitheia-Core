@@ -34,7 +34,7 @@
       </tbody>
     #else
       #foreach ($project in $projectsList)
-        #if ($project.getId() == $selProject.getId())
+        #if ($selProject && $project.getId() == $selProject.getId())
           #set ($selVal = "")
           #set ($selClass = "selected")
         #else
