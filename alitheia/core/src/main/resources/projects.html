@@ -7,10 +7,6 @@
         <div id="contents">
           <h2>$tr.label("projects_mngm")</h2>
           
-        ##  <div id="table">
-         ##   $projects.render($request)
-         ## </div>
-          
           <div id="table">
             #if($request.getParameter("reqAction") == "conShowProject" && $selProject)
               #parse("projects_show.html")

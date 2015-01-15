@@ -89,10 +89,7 @@ public class ProjectsView extends AbstractView {
         // Request values
         String reqValAction        = "";
         Long   reqValProjectId     = null;
-
-        // Selected project
-        selProject = null;
-
+        
         //Delete old errors
     	errors.clear();
 
@@ -100,26 +97,29 @@ public class ProjectsView extends AbstractView {
         reqValAction = req.getParameter(WebAdminConstants.REQ_PAR_ACTION);
         
         // Retrieve the selected project's DAO (if any)
+        selProject = null;
         reqValProjectId = fromString(req.getParameter(WebAdminConstants.REQ_PAR_PROJECT_ID));
         if (reqValProjectId != null) {
             selProject = sobjDB.findObjectById(StoredProject.class, reqValProjectId);
         }
         
-        if (reqValAction.equals(WebAdminConstants.ACT_CON_ADD_PROJECT)) {
-        	selProject = addProject(req);
-        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_REM_PROJECT)) {
-        	removeProject(selProject);
-        	this.selProject = null;
-        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_UPD)) {
-        	triggerUpdate(selProject, req.getParameter(WebAdminConstants.REQ_PAR_UPD));
-        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_UPD_ALL)) {
-        	triggerUpdate(selProject);
-        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_UPD_ALL_NODE)) {
-        	triggerAllUpdateNode();
-        } else {
-        	// Retrieve the selected plug-in's hash-code
-    		String reqValSyncPlugin = req.getParameter(WebAdminConstants.REQ_PAR_SYNC_PLUGIN);
-    		syncPlugin(selProject, reqValSyncPlugin);
+        if (reqValAction != null) {
+        	if (reqValAction.equals(WebAdminConstants.ACT_CON_ADD_PROJECT)) {
+        		selProject = addProject(req);
+	        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_REM_PROJECT)) {
+	        	removeProject(selProject);
+	        	this.selProject = null;
+	        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_UPD)) {
+	        	triggerUpdate(selProject, req.getParameter(WebAdminConstants.REQ_PAR_UPD));
+	        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_UPD_ALL)) {
+	        	triggerUpdate(selProject);
+	        } else if (reqValAction.equals(WebAdminConstants.ACT_CON_UPD_ALL_NODE)) {
+	        	triggerAllUpdateNode();
+	        } else {
+	        	// Retrieve the selected plug-in's hash-code
+	    		String reqValSyncPlugin = req.getParameter(WebAdminConstants.REQ_PAR_SYNC_PLUGIN);
+	    		syncPlugin(selProject, reqValSyncPlugin);
+	        }
         }
     }
 
