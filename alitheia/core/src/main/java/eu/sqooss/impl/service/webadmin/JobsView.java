@@ -56,7 +56,13 @@ public class JobsView extends AbstractView {
 	public static List<String> getRunningJobs() {
 		return sobjSched.getSchedulerStats().getRunJobs();
 	}
-	
+
+
+	/**
+	 * Returns the current statistics of the scheduler
+	 * 
+	 * @return SchedulerStats with the relevevant scheduler information
+	 */
 	public static SchedulerStats getSchedulerStats() {
 		return sobjSched.getSchedulerStats();
 	}

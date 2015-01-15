@@ -81,17 +81,11 @@ public class ProjectDeleteJob extends Job {
         //Cleanup plugin results
         List<Plugin> ps = (List<Plugin>) dbs.doHQL("from Plugin");        
         
-        //TODO continue is generally bad form
         PluginAdmin pa = core.getPluginAdmin();
         for (Plugin p : ps ) {
             AlitheiaPlugin ap = pa.getPlugin(pa.getPluginInfo(p.getHashcode()));
-            if (ap == null) {
-            	//logger.warn("Plugin with hashcode: "+ p.getHashcode() + 
-            	//		" not installed");
-            	continue;
-            }
-            	
-            ap.cleanup(sp);
+            if (ap != null)
+                ap.cleanup(sp);
         }
         
         boolean success = true;

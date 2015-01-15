@@ -1,5 +1,5 @@
 #set ($projectsList = $projects.getProjects())
-#set($selProject = $projects.getProjectById($request.getParameter("projectId")))
+#set($selProject = $projects.getSelProject())
 #if($selProject)
   #set ($refreshURL = "/projects?projectId=$selProject.getId()")  	
   #set ($selProjDisable = "")

@@ -5,22 +5,35 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Set;
 
+import org.apache.velocity.VelocityContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.osgi.framework.BundleContext;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import eu.sqooss.core.AlitheiaCore;
+import eu.sqooss.impl.service.webadmin.ProjectDeleteJob;
 import eu.sqooss.impl.service.webadmin.ProjectsView;
+import eu.sqooss.service.abstractmetric.AlitheiaPlugin;
+import eu.sqooss.service.admin.AdminAction;
+import eu.sqooss.service.admin.AdminService;
+import eu.sqooss.service.admin.actions.UpdateProject;
 import eu.sqooss.service.cluster.ClusterNodeService;
 import eu.sqooss.service.db.Bug;
 import eu.sqooss.service.db.ClusterNode;
@@ -28,38 +41,216 @@ import eu.sqooss.service.db.DBService;
 import eu.sqooss.service.db.MailMessage;
 import eu.sqooss.service.db.ProjectVersion;
 import eu.sqooss.service.db.StoredProject;
+import eu.sqooss.service.logging.Logger;
+import eu.sqooss.service.metricactivator.MetricActivator;
+import eu.sqooss.service.pa.PluginAdmin;
+import eu.sqooss.service.pa.PluginInfo;
+import eu.sqooss.service.scheduler.Job;
+import eu.sqooss.service.scheduler.Scheduler;
+import eu.sqooss.service.scheduler.SchedulerException;
 import eu.sqooss.service.updater.Updater;
 import eu.sqooss.service.updater.UpdaterService;
 import eu.sqooss.service.updater.UpdaterService.UpdaterStage;
 
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ClusterNode.class, ProjectVersion.class, Bug.class, MailMessage.class})
+@PrepareForTest({ClusterNode.class, 
+		ProjectVersion.class, 
+		Bug.class, 
+		MailMessage.class, 
+		ClusterNode.class
+	})
 public class ProjectsViewTest {
 	@Mock private DBService sobjDB;
 	@Mock private ClusterNodeService sobjClusterNode;
 	@Mock private StoredProject projectMock;
 	@Mock private UpdaterService sobjUpdater;
+	@Mock private AlitheiaPlugin pObj;
+	
+	@Mock private PluginAdmin sobjPA;
+	@Mock private MetricActivator compMA;
+	@Mock private Logger sobjLogger;
+	@Mock private BundleContext bc;
+	@Mock private VelocityContext vc;
+	@Mock private AlitheiaCore core;
+	@Mock private AdminService as;
+	@Mock private AdminAction aa;
+	@Mock private Scheduler sobjSched;
+	
+	private ProjectsView pView;
+	
+	private void initPView(){
+		pView = new ProjectsView(bc, vc);
+		Whitebox.setInternalState(ProjectsView.class, sobjPA );
+		Whitebox.setInternalState(ProjectsView.class, compMA);
+		Whitebox.setInternalState(ProjectsView.class, sobjLogger);
+		Whitebox.setInternalState(ProjectsView.class, core);
+		Whitebox.setInternalState(ProjectsView.class, sobjSched);
+		
 
-	@BeforeClass
-    public static void setUp() 
-	{
-    }
+		when(core.getAdminService()).thenReturn(as);
+		when(as.create(UpdateProject.MNEMONIC)).thenReturn(aa);		
+	}
 
+	
 	@Test
-	public void testGetProjectByIdNull() {
-		assertNull(ProjectsView.getProjectById((Long)null));
+	public void testSyncPluginNull() throws Exception {
+		initPView();
+		
+		//Test one of the parameters being null, should not perform
+		StoredProject selProject = new StoredProject();
+		String reqValSyncPlugin = "reqValSyncPlugin";
+
+		Whitebox.invokeMethod(pView, "syncPlugin", (StoredProject)null, (String)null);
+		Whitebox.invokeMethod(pView, "syncPlugin", (StoredProject)selProject, (String)null);
+		Whitebox.invokeMethod(pView, "syncPlugin", (StoredProject)null, (String)reqValSyncPlugin);
+	
+		verify(sobjPA, times(0)).getPluginInfo(any(String.class));
+	}
+	
+	@Test
+	public void testSyncPluginPInfoNull() throws Exception {
+		initPView();
+		
+		StoredProject selProject = new StoredProject();
+		String reqValSyncPlugin = "reqValSyncPlugin";
+		
+		Whitebox.invokeMethod(pView, "syncPlugin", selProject, reqValSyncPlugin);
+
+		verify(sobjPA, times(1)).getPluginInfo(reqValSyncPlugin);
+		verify(sobjPA, times(0)).getPlugin(any(PluginInfo.class));
 	}
 
 	@Test
-	public void testGetProjectById() {
-		Whitebox.setInternalState(ProjectsView.class, sobjDB);
+	public void testSyncPluginPluginNull() throws Exception {
+		initPView();
 		
-		StoredProject proj = new StoredProject();
-		Long id = 1L;
-		when(sobjDB.findObjectById(StoredProject.class, id)).thenReturn(proj);
+		StoredProject selProject = new StoredProject();
+		String reqValSyncPlugin = "reqValSyncPlugin";
+		PluginInfo pInfo = new PluginInfo();
 		
-		assertEquals(ProjectsView.getProjectById(id), proj);
+		when(sobjPA.getPluginInfo(reqValSyncPlugin)).thenReturn(pInfo);
+		
+		Whitebox.invokeMethod(pView, "syncPlugin", selProject, reqValSyncPlugin);
+
+		verify(sobjPA, times(1)).getPluginInfo(reqValSyncPlugin);
+		verify(sobjPA, times(1)).getPlugin(pInfo);
+	}
+	
+	@Test
+	public void testSyncPluginPlugin() throws Exception {
+		initPView();
+		
+		StoredProject selProject = new StoredProject();
+		String reqValSyncPlugin = "reqValSyncPlugin";
+		PluginInfo pInfo = new PluginInfo();
+
+		when(sobjPA.getPluginInfo(reqValSyncPlugin)).thenReturn(pInfo);
+		when(sobjPA.getPlugin(pInfo)).thenReturn(pObj);
+		
+		Whitebox.invokeMethod(pView, "syncPlugin", selProject, reqValSyncPlugin);
+
+		verify(sobjPA, times(1)).getPluginInfo(reqValSyncPlugin);
+		verify(sobjPA, times(1)).getPlugin(pInfo);
+		verify(compMA, times(1)).syncMetric(pObj, selProject);
+	}
+	
+	@Test
+	public void testTriggerAllUpdateNode() throws Exception {
+		initPView();
+		
+		HashSet<StoredProject> projects = new HashSet<StoredProject>();
+		projects.add(new StoredProject());
+		projects.add(new StoredProject());
+		
+		ClusterNode node = new ClusterNode();
+		node.setProjects(projects);
+		PowerMockito.mockStatic(ClusterNode.class);
+		when(ClusterNode.thisNode()).thenReturn(node);
+
+		Whitebox.invokeMethod(pView, "triggerAllUpdateNode");
+		
+		verify(aa, times(2)).addArg("project", 0L);
+	}
+	
+//    private StoredProject removeProject(StoredProject project) {
+//    	if (project != null) {
+//			// Deleting large projects in the foreground is very slow
+//			ProjectDeleteJob pdj = new ProjectDeleteJob(sobjCore, project);
+//			try {
+//				sobjSched.enqueue(pdj);
+//			} catch (SchedulerException e1) {
+//				errors.add(getErr("e0034"));
+//			}
+//			project = null;
+//		} else {
+//			errors.add(getErr("e0034"));
+//		}
+//    }
+	
+	@Test
+	public void testRemoveProjectNull() throws Exception {
+		initPView();		
+		Whitebox.invokeMethod(pView, "removeProject", (StoredProject)null);
+		
+		assertEquals(pView.getErrors().get(0), "You must select a project first!");
+	}
+	@Test
+	public void testRemoveProjectQueuingFails() throws Exception {
+		initPView();
+		StoredProject project = new StoredProject();		
+		doThrow(new SchedulerException("mock sched exception"))
+			.when(sobjSched).enqueue(any(ProjectDeleteJob.class));
+		
+		Whitebox.invokeMethod(pView, "removeProject", (StoredProject)project);
+		assertEquals(pView.getErrors().get(0), "You must select a project first!");
+	}
+	@Test
+	public void testRemoveProject() throws Exception {
+		initPView();
+		StoredProject project = new StoredProject();		
+		
+		Whitebox.invokeMethod(pView, "removeProject", (StoredProject)project);
+		assertEquals(pView.getErrors().size(), 0);
+		verify(sobjSched, times(1)).enqueue(any(Job.class));
+	}
+
+
+	
+	@Test
+	public void testTriggerUpdateNull() throws Exception {
+		initPView();
+		
+		StoredProject project = new StoredProject();
+		Whitebox.invokeMethod(pView, "triggerUpdate", project, null);
+
+		verify(aa, times(1)).addArg("project", project.getId());
+		verify(as, times(1)).execute(aa);
+		verify(aa, times(1)).results();
+	}
+	
+	@Test
+	public void testTriggerUpdate() throws Exception {
+		initPView();
+		
+		StoredProject project = new StoredProject();
+		when(aa.hasErrors()).thenReturn(true);
+		
+		Whitebox.invokeMethod(pView, "triggerUpdate", project, "");
+
+		verify(aa, times(1)).addArg("project", project.getId());
+		verify(aa, times(1)).addArg("updater", "");
+		verify(as, times(1)).execute(aa);
+		verify(aa, times(1)).errors();
+	}
+	
+	@Test
+	public void testTriggerUpdateSingleArg() throws Exception {
+		initPView();
+		
+		StoredProject project = new StoredProject();
+		Whitebox.invokeMethod(pView, "triggerUpdate", project);		
+		verify(aa, times(1)).addArg("project", project.getId());
 	}
 	
 	@Test
@@ -139,18 +330,6 @@ public class ProjectsViewTest {
 		assertEquals("Mock bug ID", ProjectsView.getLastBug(project));
 	}
 	
-
-//    
-//    public static String getLastEmailDate(StoredProject project) {
-//    	String lastDate = getLbl("l0051");
-//    	if(project != null) {
-//	        MailMessage mm = MailMessage.getLatestMailMessage(project);
-//	        if (mm != null) {
-//	        	lastDate = mm.getSendDate().toString();
-//	        }
-//    	}
-//        return lastDate;
-//    }
 
 	@Test
 	public void testGetLastEmailDateNull() {
@@ -270,9 +449,10 @@ public class ProjectsViewTest {
 	
 	@Test
 	public void testGetErrors() {
+		initPView();
 		ArrayList<String> errors = new ArrayList<String>(Arrays.asList("dummy error"));
-		Whitebox.setInternalState(ProjectsView.class, errors);
+		Whitebox.setInternalState(pView, errors);
 		
-		assertEquals(errors, ProjectsView.getErrors());
+		assertEquals(errors, pView.getErrors());
 	}
 }

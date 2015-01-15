@@ -1,6 +1,9 @@
 package eu.sqooss.test.service.webadmin;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import junit.framework.Assert;
 
 import org.junit.BeforeClass;
@@ -34,6 +37,13 @@ public class JobsViewTest {
 
 	@BeforeClass
 	public static void setUp() {
+	}
+	
+	@Test
+	public void testExed() {
+		JobsView jv = new JobsView(null, null);
+		assertNotNull(jv);
+		jv.exec(null);
 	}
 
 	@Test
@@ -125,15 +135,11 @@ public class JobsViewTest {
 		when(job2.getErrorException()).thenReturn(new IllegalArgumentException("Exception text 2"));
 		Assert.assertEquals(jobs, JobsView.getFailedJobs());
 	}
-	
-//	@Test
-//	public void testIsFailedJobsEmpty() {
-//		Whitebox.setInternalState(JobsView.class, sobjSched);
-//		Assert.assertTrue(JobsView.isFailedJobsEmpty());
-//		Job[] jobs1 = new Job[] {};
-//		Job[] jobs2 = new Job[] {job1, job2, null};
-//		when(sobjSched.getFailedQueue()).thenReturn(jobs1, jobs2);
-//		Assert.assertTrue(JobsView.isFailedJobsEmpty());
-//		Assert.assertFalse(JobsView.isFailedJobsEmpty());
-//	}
+
+	@Test
+	public void testGetSchedulerStats() {
+		Whitebox.setInternalState(JobsView.class, sobjSched);
+		JobsView.getSchedulerStats();
+		verify(sobjSched, times(1)).getSchedulerStats();
+	}
 }
